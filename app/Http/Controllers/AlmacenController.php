@@ -23,9 +23,10 @@ class AlmacenController extends Controller
         $almacen = Almacen::create([
             'nombre' => $request->nombre,
             'direccion' => $request->direccion,
+            'tax' => $request->tax
         ]);
 
-        return Redirect::route('admin.almacen.create');
+        return Redirect::route('admin.almacenes');
     }
 
     public function update(Request $request, $id){

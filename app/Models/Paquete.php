@@ -9,6 +9,7 @@ class Paquete extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $table = 'paquete'; // Si la tabla se llama 'paquete'
 
 
 }

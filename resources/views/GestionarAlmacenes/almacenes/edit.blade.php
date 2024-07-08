@@ -6,38 +6,40 @@
     </x-slot>
 
     <x-guest-layout>
-    <form method="POST" action="{{ route('admin.almacen.update', ['almacen_id' => $almacen->id]) }}" >
-    @csrf
-    @method('PATCH')
-    <!-- Name -->
-    <div>
-        <x-input-label for="nombre" :value="__('Nombre del almacen')" />
-        <x-text-input id="nombre" class="block mt-1 w-full" type="text" name="nombre" :value="old('nombre', $almacen->nombre)" required autofocus autocomplete="nombre" />
-        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-    </div>
+        <form method="POST" action="{{ route('admin.almacen.update', ['almacen_id' => $almacen->id]) }}">
+            @csrf
+            @method('PATCH')
+            <!-- Name -->
+            <div>
+                <x-input-label for="nombre" :value="__('Nombre del almacen')" />
+                <x-text-input id="nombre" class="block mt-1 w-full" type="text" name="nombre" :value="old('nombre', $almacen->nombre)" required autofocus autocomplete="nombre" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            </div>
 
 
 
-    <!-- Descripcion -->
-    <div class="mt-4">
-        <x-input-label for="direccion" :value="__('Direccion del almacen')" />
-        <x-text-input id="direccion" class="block mt-1 w-full"
-                        type="text"
-                        name="direccion"
-                        :value="old('direccion', $almacen->direccion)"
-                        />
-    </div>
+            <!-- Descripcion -->
+            <div class="mt-4">
+                <x-input-label for="direccion" :value="__('Direccion del almacen')" />
+                <x-text-input id="direccion" class="block mt-1 w-full" type="text" name="direccion"
+                    :value="old('direccion', $almacen->direccion)" />
+            </div>
+
+            <!-- Tax -->
+            <div class="mt-4">
+                <x-input-label for="tax" :value="__('Taxes en el almacen')" />
+                <x-text-input id="tax" class="block mt-1 w-full" type="number" name="tax" :value="old('tax', $almacen->tax)" required autocomplete="Taxes en el almacen" step="0.01" />
+            </div>
 
 
 
+            <div class="flex items-center justify-center mt-4">
+                <x-primary-button class="ms-4">
+                    {{ __('Guardar') }}
+                </x-primary-button>
+            </div>
+        </form>
 
-    <div class="flex items-center justify-center mt-4">
-        <x-primary-button class="ms-4">
-            {{ __('Guardar') }}
-        </x-primary-button>
-    </div>
-</form>
-
-</x-guest-layout>
+    </x-guest-layout>
 
 </x-app-layout>

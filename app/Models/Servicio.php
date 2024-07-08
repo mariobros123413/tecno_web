@@ -9,6 +9,8 @@ class Servicio extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $table = 'servicio'; // Si la tabla se llama 'paquete'
+
     public function guias(){
         return $this->hasMany(Guia::class);
     }

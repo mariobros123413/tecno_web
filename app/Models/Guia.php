@@ -9,6 +9,7 @@ class Guia extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $table = 'guia'; // Si la tabla se llama 'guia'
 
     public function user(){
         return $this->belongsTo(User::class);
