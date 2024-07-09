@@ -59,7 +59,13 @@
                                                     <td style="text-align: center;">{{$guia->peso_total}}</td>
                                                     <td style="text-align: center;">{{$guia->precio}}</td>
                                                     <td style="text-align: center;">{{$guia->codigo}}</td>
-                                                    <td style="text-align: center;">{{$guia->estado}}</td>
+                                                    <td style="text-align: center;">
+                                                        @if($guia->estado)
+                                                            El paquete llegó al almacén destino
+                                                        @else
+                                                            Está en camino
+                                                        @endif
+                                                    </td>
                                                     <td style="text-align: center;">
                                                         <x-custom-button :url="'admin-guia/show/'" :valor="$guia"
                                                             target="_blank">{{ __('Show') }}</x-custom-button>

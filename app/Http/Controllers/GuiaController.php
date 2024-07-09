@@ -91,17 +91,24 @@ class GuiaController extends Controller
 
             $userId = $user->id;
             $paqueteId = $paquete->id;
-            Guia::create([
+            $guiac = Guia::create([
                 'user_id' => $userId,
                 'paquete_id' => $paqueteId,
                 'almacen_inicio' => $almacen_id_final,
                 'almacen_final' => $almacen_id_inicio,
                 'fecha_recepcion' => $fecha_recepcion,
                 'fecha_entrega' => $fecha_entrega,
-                'estado' => 0,
+                'estado' => false,
                 'servicio_id' => $servicio_id,
                 'precio' => $monto_total,
                 'codigo' => $codigo,
+            ]);
+
+            Ruta_Rastreo::create([
+                'guia_id' => $guiac->id,
+                'almacen_id' => $almacen_id_final,
+                'fecha_registro' =>  date('Y-m-d'),
+                'estado' => false
             ]);
             return response()->json(['message' => 'Datos guardados correctamente', 'MMCA' => $codigo], 200);
 
@@ -135,27 +142,15 @@ class GuiaController extends Controller
 
     public function destroy($guia_id)
     {
-        // Encuentra la guia por su ID
         $guia = Guia::find($guia_id);
-
-        // Asegúrate de que la guia exista antes de proceder
         if ($guia) {
-            // Obtén el paquete asociado a la guia
-            $paquete_id = $guia->paquete_id;  // Asumiendo que 'paquete_id' es el campo en la tabla 'guias' que guarda la relación
-
-            // Encuentra el paquete por su ID
+            $paquete_id = $guia->paquete_id;
             $paquete = Paquete::find($paquete_id);
-
-            // Asegúrate de que el paquete exista antes de intentar eliminarlo
             if ($paquete) {
                 $paquete->delete();
             }
-
-            // Elimina la guia
             $guia->delete();
         }
-
-        // Redirige de vuelta a la ruta de administración de guías
         return Redirect::route('admin.guias');
     }
 

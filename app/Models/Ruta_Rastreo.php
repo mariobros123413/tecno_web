@@ -9,6 +9,7 @@ class Ruta_Rastreo extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $table = 'ruta_rastreo'; // Si la tabla se llama 'guia'
 
     public function Guia(){
         return $this->belongsTo(Guia::class);

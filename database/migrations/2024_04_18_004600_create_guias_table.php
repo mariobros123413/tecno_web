@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('almacen_final');
             $table->date('fecha_recepcion');
             $table->date('fecha_entrega');
-            $table->integer('estado')->default(0);
+            $table->boolean('estado')->default(false);
             $table->foreignIdFor(Servicio::class);
             $table->decimal('precio',8, 2);
             $table->string('codigo');

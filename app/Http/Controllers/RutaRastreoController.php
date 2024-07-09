@@ -1,27 +1,16 @@
 <?php
-
 namespace App\Http\Controllers;
-
-use App\Models\User;
-use App\Models\Paquete;
 use App\Models\Guia;
 use App\Models\Almacen;
-use App\Models\Servicio;
-use App\Models\Pago;
-use App\Models\Venta;
-use App\Models\Vertice;
-use App\Models\Ruta;
-use App\Models\Arco;
-use GuzzleHttp\Client;
-use App\Models\Ruta_Rastreo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 class RutaRastreoController extends Controller
 {
-
+    public function checkInShow()
+    {
+        $almacenes = Almacen::paginate(20);
+        return view('GestionarRutas.checkin.show', compact('almacenes'));
+    }
     public function checkIn(Request $request)
     {
         $guia_id = $request->guia_id;
@@ -42,8 +31,11 @@ class RutaRastreoController extends Controller
         if (!$rutaRastreo) {
             return response()->json(['message' => 'No se encontró ninguna ruta de rastreo con ese id de almacen'], 404);
         }
+        $guia->estado = true;
+        $guia->save();
 
-        $rutaRastreo->estado = 1;
+        $rutaRastreo->estado = true;
+        $rutaRastreo->fecha_registro = date('Y-m-d'); // Asignar la fecha actual
         $rutaRastreo->save();
 
         return response()->json([
@@ -53,6 +45,4 @@ class RutaRastreoController extends Controller
                 $guia->codigo . "*."
         ], 200);
     }
-
-
 }

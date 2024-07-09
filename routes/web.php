@@ -98,18 +98,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('/admin-guia/update/{guia_id}', [GuiaController::class, 'update'])->name('admin.guia.update');
         Route::delete('admin-guia/destroy/{guia_id}', [GuiaController::class, 'destroy'])->name('admin.guia.destroy');
 
-
         //GESTIONAR RUTA_RASTREO
-        // Route::get('/admin-rutasrastreos', [RutaRastreoController::class, 'index'])->name('admin.rutasrastreos');
-        // Route::get('/admin-rutarastreo/create', [RutaRastreoController::class, 'create'])->name('admin.rutarastreo.create');
-        // Route::post('/admin-rutarastreo/store', [RutaRastreoController::class, 'store'])->name('admin.rutarastreo.store');
-        // Route::get('/admin-rutarastreo/edit/{rutarastreo_id}', [RutaRastreoController::class, 'edit'])->name('admin.rutarastreo.edit');
-        // Route::patch('/admin-rutarastreo/update/{rutarastreo_id}', [RutaRastreoController::class, 'update'])->name('admin.rutarastreo.update');
-        // Route::delete('admin-rutarastreo/destroy/{rutarastreo_id}', [RutaRastreoController::class, 'destroy'])->name('admin.rutarastreo.destroy');
+        Route::get('/admin-ruta-check-in/show',[RutaRastreoController::class, 'checkInShow'])->name('admin.ruta.checkIn.show');
         Route::post('/admin-rutarastreo/checkIn', [RutaRastreoController::class, 'checkIn'])->name('admin.rutarastreo.checkIn');
-
-
-        //GESTIONAR RUTA
 
         //GESTIONAR VENTAS
         Route::get('/admin-ventas', [VentasAdminController::class, 'index'])->name('admin.ventas');

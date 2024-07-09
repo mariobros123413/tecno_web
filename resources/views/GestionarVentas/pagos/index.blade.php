@@ -45,7 +45,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="flex flex-col">
                                     <label class="px-3">Razon Social</label>
-                                    <x-text-input type="text"  required name="tcRazonSocial" :value="__('Gupo03-SA')" class="border p-2 rounded-md "  readonly/>
+                                    <x-text-input type="text"  required name="tcRazonSocial" :value="__('Gupo04-SA')" class="border p-2 rounded-md "  readonly/>
                                 </div>
                                 <div class="flex flex-col">
                                     <label class="px-3">CI/NIT</label>
@@ -56,22 +56,19 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="flex flex-col">
                                     <label class="px-3">Celular</label>
-                                    <x-text-input type="text"  required name="tnTelefono" :value="__('76644887')" class="border p-2 rounded-md" title="Ingresa solo números" pattern="[0-9]*" required/>
+                                    <x-text-input type="text"  required name="tnTelefono" :value="__('75540850')" class="border p-2 rounded-md" title="Ingresa solo números" pattern="[0-9]*" required/>
                                 </div>
                                 <div class="flex flex-col">
                                     <label class="px-3">Correo</label>
-                                    <x-text-input type="text" name="tcCorreo" :value="__('miltonrodriguezdavalos@gmail.com')" class="border p-2 rounded-md" readonly/>
+                                    <x-text-input type="text" name="tcCorreo" :value="__('j.mario18npa@gmail.com')" class="border p-2 rounded-md" readonly/>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                                <!-- Monto total -->
                                 <div class="flex flex-col">
                                      <label class="px-3">Total</label>
                                     <x-text-input type="number" name="tnMonto" :value="0.01" class="border p-2 rounded-md"  readonly/>
                                 </div>
 
-                                <!-- Tipo de servicio -->
                                 <div class="flex flex-col">
                                     <label class="px-3">Tipo de Servicio</label>
                                     <select name="tnTipoServicio" class="border p-2 rounded-md">

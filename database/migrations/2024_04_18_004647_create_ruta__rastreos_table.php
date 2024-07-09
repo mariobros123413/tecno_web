@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(Guia::class);
             $table->foreignIdFor(Almacen::class);
             $table->date('fecha_registro');
-            $table->integer('estado')->default(0);
+            $table->boolean('estado')->default(false);
             $table->timestamps();
         });
     }
