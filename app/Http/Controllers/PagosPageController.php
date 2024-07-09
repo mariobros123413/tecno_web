@@ -54,7 +54,8 @@ class PagosPageController extends Controller{
     // GENERAR COBRO
     public function generarCobro(Request $request){
         $estudianteId = $request->tcUserId;
-
+        $guia = Guia::find($request->tcGuiaId);
+        $usuario = User::find($guia->user_id);
         do {
             $nroPago = rand(100000, 999999);
             $existe = Pago::where('id', $nroPago)->exists();
@@ -63,14 +64,14 @@ class PagosPageController extends Controller{
         try {
             $lcComerceID           = "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c";  // credencia dado por pagofacil
             $lnMoneda              = 1;
-            $lnTelefono            = $request->tnTelefono;
-            $lcNombreUsuario       = $request->tcRazonSocial;
-            $lnCiNit               = $request->tcCiNit;
-            $lnGuiaId            = $request->tcGuiaId;
-            $lnGuiaCodigo            = $request->tcGuiaCodigo;
+            $lnTelefono            = $usuario->celular;
+            $lcNombreUsuario       = $usuario->name;
+            $lnCiNit               = $usuario->cedula;
+            $lnGuiaId              = $request->tcGuiaId;
+            $lnGuiaCodigo          = $request->tcGuiaCodigo;
             $lcNroPago             = $nroPago; // Genera un número aleatorio entre 100,000 y 999,999   sirve para callback , pedidoID
             $lnMontoClienteEmpresa = $request->tnMonto;
-            $lcCorreo              = $request->tcCorreo;
+            $lcCorreo              = $usuario->email;
             $lcUrlCallBack         = route('admin.pagos.callback'); //"https://mail.tecnoweb.org.bo/inf513/grupo03sa/ultimo/public/cursos/pagos/callback";
             $lcUrlReturn           = "";
             $laPedidoDetalle       =  $request->taPedidoDetalle;

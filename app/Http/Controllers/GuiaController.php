@@ -107,11 +107,14 @@ class GuiaController extends Controller
             Ruta_Rastreo::create([
                 'guia_id' => $guiac->id,
                 'almacen_id' => $almacen_id_final,
-                'fecha_registro' =>  date('Y-m-d'),
+                'fecha_registro' => date('Y-m-d'),
                 'estado' => false
             ]);
-            return response()->json(['message' => 'Datos guardados correctamente', 'MMCA' => $codigo], 200);
-
+            return response()->json([
+                'message' => 'Datos guardados correctamente',
+                'MMCA' => $codigo,
+                'celular' => $user->celular,
+            ], 200);
         } catch (\Exception $e) {
 
             //\Log::error('Error al procesar la solicitud: ' . $e->getMessage());
@@ -146,8 +149,13 @@ class GuiaController extends Controller
         if ($guia) {
             $paquete_id = $guia->paquete_id;
             $paquete = Paquete::find($paquete_id);
+            $ruta_rastreos = Ruta_Rastreo::where('guia_id', $guia_id)->get();
+
             if ($paquete) {
                 $paquete->delete();
+            }
+            foreach ($ruta_rastreos as $ruta_rastreo) {
+                $ruta_rastreo->delete();
             }
             $guia->delete();
         }

@@ -264,8 +264,7 @@
                             console.log(xhr.status);
                             if (xhr.status === 200) {
                                 const mensaje = "Su pedido fue registrado exitosamente :) , Puede realizar el seguimiendo de su pedido en nuestra aplicacion movil.";
-                                //EnviarWhatsApp(celular, mensaje);
-                                notificacionCliente(response.data.numero, response.data.message);
+                                notificacionCliente(response.celular, mensaje);
                                 $('#userModal').removeClass('hidden');
                                 $('#mensaje').text(response.message);
                             }

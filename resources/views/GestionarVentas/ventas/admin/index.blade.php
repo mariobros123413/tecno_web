@@ -44,65 +44,65 @@
                                             </thead>
                                             @foreach($ventas as $venta)
 
-                                                                <tr>
-                                                                    <td style="text-align: center;">{{$venta->id}}</td>
-                                                                    <td style="text-align: center;">{{$venta->user_id}}</td>
-                                                                    <td style="text-align: center;">{{$venta->pago_id}}</td>
-                                                                    <td style="text-align: center;">{{$venta->fecha}}</td>
-                                                                    <td style="text-align: center;">@if($venta->metodopago == 4)
-                                                                        Pago Qr
-                                                                    @else
-                                                                        Pago Tigo Money
-                                                                    @endif
-                                                                    </td>
+                                                <tr>
+                                                    <td style="text-align: center;">{{$venta->id}}</td>
+                                                    <td style="text-align: center;">{{$venta->user_id}}</td>
+                                                    <td style="text-align: center;">{{$venta->pago_id}}</td>
+                                                    <td style="text-align: center;">{{$venta->fecha}}</td>
+                                                    <td style="text-align: center;">@if($venta->metodopago == 4)
+                                                        Pago Qr
+                                                    @else
+                                                        Pago Tigo Money
+                                                    @endif
+                                                    </td>
 
-                                                                    <td style="text-align: center;">{{$venta->montototal}}</td>
-                                                                    <td style="text-align: center; color:
-                                                @if($venta->estado == 2)
-                                                    green; /* Color verde para pagado */
-                                                @else
-                                                    red; /* Color rojo para no cancelado */
-                                                @endif">
-                                                                        @if($venta->estado == 2)
-                                                                            Pagado
-                                                                        @else
-                                                                            No cancelado
-                                                                        @endif
-                                                                    </td>
+                                                    <td style="text-align: center;">{{$venta->montototal}}</td>
+                                                    <td style="text-align: center; color:
+                                                    @if($venta->estado == 2)
+                                                        green; /* Color verde para pagado */
+                                                    @else
+                                                        red; /* Color rojo para no cancelado */
+                                                    @endif">
+                                                        @if($venta->estado == 2)
+                                                            Pagado
+                                                        @else
+                                                            No cancelado
+                                                        @endif
+                                                    </td>
 
-                                                                    <td style="text-align: center;">
-                                                                        <x-custom-button :url="'admin-ventas/edit/'"
-                                                                            :valor="$venta">{{ __('Editar') }}</x-custom-button>
-                                                                        <x-danger-button x-data=""
-                                                                            x-on:click.prevent="$dispatch('open-modal','{{$venta->id}}')">{{ __('Eliminar') }}</x-danger-button>
-                                                                        <x-modal name='{{$venta->id}}'
-                                                                            :show="$errors->userDeletion->isNotEmpty()" focusable>
-                                                                            <form method="POST"
-                                                                                action="{{ route('admin.ventas.destroy', ['venta_id' => $venta->id]) }}"
-                                                                                class="p-6">
-                                                                                @csrf
-                                                                                @method('DELETE')
-                                                                                <h2
-                                                                                    class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                                                                    {{ __('¿Estás seguro que deseas eliminar la venta con id :  ') }}{{ $venta->id }}{{ __('?') }}
-                                                                                </h2>
-                                                                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                                                                    {{ __('Presione "CANCEL" para cancelar') }}
-                                                                                </p>
+                                                    <td style="text-align: center;">
+                                                        <x-custom-button :url="'admin-ventas/edit/'"
+                                                            :valor="$venta">{{ __('Editar') }}</x-custom-button>
+                                                        <x-danger-button x-data=""
+                                                            x-on:click.prevent="$dispatch('open-modal','{{$venta->id}}')">{{ __('Eliminar') }}</x-danger-button>
+                                                        <x-modal name='{{$venta->id}}'
+                                                            :show="$errors->userDeletion->isNotEmpty()" focusable>
+                                                            <form method="POST"
+                                                                action="{{ route('admin.ventas.destroy', ['venta_id' => $venta->id]) }}"
+                                                                class="p-6">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <h2
+                                                                    class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                                                    {{ __('¿Estás seguro que deseas eliminar la venta con id :  ') }}{{ $venta->id }}{{ __('?') }}
+                                                                </h2>
+                                                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                                                    {{ __('Presione "CANCEL" para cancelar') }}
+                                                                </p>
 
-                                                                                <div class="mt-6 flex justify-end">
-                                                                                    <x-secondary-button x-on:click="$dispatch('close')">
-                                                                                        {{ __('Cancel') }}
-                                                                                    </x-secondary-button>
+                                                                <div class="mt-6 flex justify-end">
+                                                                    <x-secondary-button x-on:click="$dispatch('close')">
+                                                                        {{ __('Cancel') }}
+                                                                    </x-secondary-button>
 
-                                                                                    <x-danger-button class="ms-3">
-                                                                                        {{ __('Eliminar') }}
-                                                                                    </x-danger-button>
-                                                                                </div>
-                                                                            </form>
-                                                                        </x-modal>
-                                                                    </td>
-                                                                </tr>
+                                                                    <x-danger-button class="ms-3">
+                                                                        {{ __('Eliminar') }}
+                                                                    </x-danger-button>
+                                                                </div>
+                                                            </form>
+                                                        </x-modal>
+                                                    </td>
+                                                </tr>
 
                                             @endforeach
                                             </tbody>
