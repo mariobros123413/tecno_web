@@ -235,8 +235,6 @@
                     const monto_total = $('#monto_total').val();
                     const almacen_id_inicio = $('#almacen_id_inicio').val();
                     const almacen_id_final = $('#almacen_id_final').val();
-                    //_token: $('meta[name="csrf-token"]').attr('content')
-
                     const datos = {
                         user_id,
                         nombre,
@@ -255,7 +253,6 @@
                         _token: $('meta[name="csrf-token"]').attr('content')
                     };
                     console.log(datos);
-
                     $.ajax({
                         url: '/admin-guia/store',
                         type: 'POST',
@@ -268,6 +265,7 @@
                             if (xhr.status === 200) {
                                 const mensaje = "Su pedido fue registrado exitosamente :) , Puede realizar el seguimiendo de su pedido en nuestra aplicacion movil.";
                                 //EnviarWhatsApp(celular, mensaje);
+                                notificacionCliente(response.data.numero, response.data.message);
                                 $('#userModal').removeClass('hidden');
                                 $('#mensaje').text(response.message);
                             }
@@ -281,7 +279,10 @@
                 console.error('No se encontró el botón btnCapturar.');
             }
         });
-
+        function notificacionCliente(numeroCelular, mensaje) {
+            var enlace = "https://wa.me/" + numeroCelular + "?text=" + encodeURIComponent(mensaje);
+            window.open(enlace, '_blank');
+        }
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

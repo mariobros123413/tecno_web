@@ -138,7 +138,8 @@
                 })
                     .then(response => {
                         console.log('Datos enviados correctamente:', response.data);
-                        EnviarWhatsApp(response.data.numero, response.data.message);
+                        //EnviarWhatsApp(response.data.numero, response.data.message);
+                        notificacionCliente(response.data.numero, response.data.message);
                         const mensaje = "Estado de la ruta actualizada! :)";
                         $('#userModal').removeClass('hidden');
                         $('#mensaje').text(mensaje);
@@ -151,6 +152,11 @@
             } else {
                 console.error('Error: guia_id o almacen_id es nulo');
             }
+        }
+
+        function notificacionCliente(numeroCelular, mensaje) {
+            var enlace = "https://wa.me/" + numeroCelular + "?text=" + encodeURIComponent(mensaje);
+            window.open(enlace, '_blank');
         }
     </script>
     <script>
