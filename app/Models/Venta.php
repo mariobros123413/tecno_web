@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Venta extends Model
 {
     protected $guarded=[];
+    protected $table = 'venta'; // Si la tabla se llama 'guia'
 
     public function detalleventa(){
         return $this->hasMany(DetalleVenta::class, 'venta_id', 'id');

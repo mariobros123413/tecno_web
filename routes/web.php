@@ -100,28 +100,16 @@ Route::middleware('auth')->group(function () {
 
 
         //GESTIONAR RUTA_RASTREO
-        Route::get('/admin-rutasrastreos', [RutaRastreoController::class, 'index'])->name('admin.rutasrastreos');
-        Route::get('/admin-rutarastreo/create', [RutaRastreoController::class, 'create'])->name('admin.rutarastreo.create');
-        Route::post('/admin-rutarastreo/store', [RutaRastreoController::class, 'store'])->name('admin.rutarastreo.store');
-        Route::get('/admin-rutarastreo/edit/{rutarastreo_id}', [RutaRastreoController::class, 'edit'])->name('admin.rutarastreo.edit');
-        Route::patch('/admin-rutarastreo/update/{rutarastreo_id}', [RutaRastreoController::class, 'update'])->name('admin.rutarastreo.update');
-        Route::delete('admin-rutarastreo/destroy/{rutarastreo_id}', [RutaRastreoController::class, 'destroy'])->name('admin.rutarastreo.destroy');
+        // Route::get('/admin-rutasrastreos', [RutaRastreoController::class, 'index'])->name('admin.rutasrastreos');
+        // Route::get('/admin-rutarastreo/create', [RutaRastreoController::class, 'create'])->name('admin.rutarastreo.create');
+        // Route::post('/admin-rutarastreo/store', [RutaRastreoController::class, 'store'])->name('admin.rutarastreo.store');
+        // Route::get('/admin-rutarastreo/edit/{rutarastreo_id}', [RutaRastreoController::class, 'edit'])->name('admin.rutarastreo.edit');
+        // Route::patch('/admin-rutarastreo/update/{rutarastreo_id}', [RutaRastreoController::class, 'update'])->name('admin.rutarastreo.update');
+        // Route::delete('admin-rutarastreo/destroy/{rutarastreo_id}', [RutaRastreoController::class, 'destroy'])->name('admin.rutarastreo.destroy');
         Route::post('/admin-rutarastreo/checkIn', [RutaRastreoController::class, 'checkIn'])->name('admin.rutarastreo.checkIn');
 
 
         //GESTIONAR RUTA
-        Route::get('/admin-rutas', [RutasController::class, 'index'])->name('admin.rutas');
-        Route::get('/admin-ruta/create', [RutasController::class, 'create'])->name('admin.ruta.create');
-        Route::post('/admin-ruta/store', [RutasController::class, 'store'])->name('admin.ruta.store');
-        Route::post('/admin-ruta-vertice/store', [RutasController::class, 'verticestore'])->name('admin.ruta.verticestore');
-        Route::get('/admin-ruta-check-in/show', [RutasController::class, 'checkInShow'])->name('admin.ruta.checkIn.show');
-        Route::post('/admin-ruta/checkIn', [RutasController::class, 'checkIn'])->name('admin.ruta.checkIn');
-
-        Route::post('/admin-ruta-arco/store', [RutasController::class, 'arcostore'])->name('admin.ruta.arcostore');
-        Route::get('/admin-ruta/show/{ruta_id}', [RutasController::class, 'show'])->name('admin.ruta.show');
-        Route::get('/admin-ruta/edit/{ruta_id}', [RutasController::class, 'edit'])->name('admin.ruta.edit');
-        Route::patch('/admin-ruta/update/{ruta_id}', [RutasController::class, 'update'])->name('admin.ruta.update');
-        Route::delete('admin-ruta/destroy/{ruta_id}', [RutasController::class, 'destroy'])->name('admin.ruta.destroy');
 
         //GESTIONAR VENTAS
         Route::get('/admin-ventas', [VentasAdminController::class, 'index'])->name('admin.ventas');
