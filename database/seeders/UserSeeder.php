@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'José Mario Herbas',
             'cedula' => '8230432',
-            'celular' => '59175540850',
+            'celular' => '75540850',
             'direccion' => 'Av/ Pentaguazu',
             'is_admin' => 1,
             'email' => 'j.mario18npa@gmail.com',
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Milenka Rojas',
             'cedula' => '123456',
-            'celular' => '59160808812',
+            'celular' => '60808812',
             'direccion' => 'Av. Busch',
             'is_admin' => 1,
             'email' => 'mrojasgarnica1@gmail.com',
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Nicolás Serevich',
             'cedula' => '123456',
-            'celular' => '59173371252',
+            'celular' => '73371252',
             'direccion' => 'Av/ Alemana',
             'is_admin' => 1,
             'email' => 'cobubenjamin898@gmail.com',

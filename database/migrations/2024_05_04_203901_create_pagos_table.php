@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pagos', function (Blueprint $table) {
+        Schema::create('pago', function (Blueprint $table) {
             $table->integer('id')->unique();
-            $table->date('fechapago');
-            $table->integer('estado');
-            $table->string('metodopago');
+            $table->date('fecha_pago');
+            $table->boolean('estado');
+            $table->string('metodo_pago');
             $table->integer('id_venta');
             $table->timestamps();
         });

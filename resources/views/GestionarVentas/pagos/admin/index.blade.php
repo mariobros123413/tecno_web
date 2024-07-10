@@ -37,7 +37,7 @@
 
                 <tr>
                         <td style="text-align: center; border: 1px solid #ccc;">{{$pago->id}}</td>
-                        <td style="text-align: center; border: 1px solid #ccc;">{{$pago->fechapago}}</td>
+                        <td style="text-align: center; border: 1px solid #ccc;">{{$pago->fecha_pago}}</td>
                         <td style="text-align: center;border: 1px solid #ccc; color:
                             @if($pago->estado == 2)
                                 green; /* Color verde para pagado */

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('celular')->default('');
             $table->string('direccion')->default('');
             $table->string('email');
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_admin')->default(0);
 

@@ -263,7 +263,7 @@
                         success: function (response, status, xhr) {
                             console.log(xhr.status);
                             if (xhr.status === 200) {
-                                const mensaje = "Su pedido fue registrado exitosamente :) , Puede realizar el seguimiendo de su pedido en nuestra aplicacion movil.";
+                                const mensaje = "Su pedido fue registrado exitosamente, Puede realizar el seguimiendo de su pedido en su perfil de OboLogistic.";
                                 notificacionCliente(response.celular, mensaje);
                                 $('#userModal').removeClass('hidden');
                                 $('#mensaje').text(response.message);

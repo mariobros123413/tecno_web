@@ -23,7 +23,7 @@ class CallBackAdminController extends Controller{
         $Ingreso = true;
 
         $pago = Pago::findOrFail($pago_id);
-        $pago->fechapago = $Fecha;
+        $pago->fecha_pago = $Fecha;
         $pago->estado = $Estado;
         $pago->metodopago = $MetodoPago;
         $pago->update();

@@ -57,7 +57,7 @@
                                 <div class="flex flex-col">
                                     <label class="px-3">Total</label>
                                     <x-text-input type="number" id="tnMonto" name="tnMonto" :value="0.01"
-                                        class="border p-2 rounded-md" readonly />
+                                        class="border p-2 rounded-md" step="0.01"/>
                                 </div>
                                 <!-- Tipo de servicio -->
                                 <div class="flex flex-col">
@@ -78,13 +78,13 @@
                                     <label class="px-3">ID Paquete</label>
                                     <input type="text" required pattern="[0-9]*" id="taPedidoDetalleSerial"
                                         name="taPedidoDetalle[0][Serial]" class="border p-2 rounded-md"
-                                        title="Ingresa solo números" pattern="[0-9]*" required readonly />
+                                        title="Ingresa solo números" pattern="[0-9]*" required />
                                 </div>
                                 <div class="flex flex-col">
                                     <label class="px-3">Servicio de envio</label>
                                     <x-text-input type="text" required name="taPedidoDetalle[0][Servicio]"
                                         id="taPedidoDetalleServicio" :value="old('servicio')"
-                                        class="border p-2 rounded-md" required readonly />
+                                        class="border p-2 rounded-md" required />
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -92,13 +92,13 @@
                                 <div class="flex flex-col">
                                     <label class="px-3">Descuento</label>
                                     <x-text-input type="number" required name="taPedidoDetalle[0][Descuento]" :value="0"
-                                        class="border p-2 rounded-md" required readonly />
+                                        class="border p-2 rounded-md" required step="0.01"/>
                                 </div>
                                 <div class="flex flex-col">
                                     <label class="px-3">Total</label>
                                     <x-text-input type="text" required name="taPedidoDetalle[0][Total]"
                                         id="taPedidoDetalleTotal" :value="old('precio')" class="border p-2 rounded-md"
-                                        required readonly />
+                                        required step="0.01"/>
                                 </div>
                             </div>
                             <!-- ... Otros elementos del formulario ... -->
@@ -106,7 +106,7 @@
                             <div class="flex justify-center mt-4">
                                 <div class="w-full md:w-1/2">
                                     <x-primary-button class="ms-4">
-                                        {{ __('Pagar') }}
+                                        {{ __('Generar cobro') }}
                                     </x-primary-button>
                                 </div>
                             </div>
@@ -186,54 +186,40 @@
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        var almacenes = @json($almacenes);
-        var users = @json($users);
-        var servicios = @json($servicios);
         $(document).ready(function () {
+            var almacenes = @json($almacenes);
+            var users = @json($users);
+            var servicios = @json($servicios);
+
             $('#mySelect').select2({
                 placeholder: "Select an option",
                 allowClear: true
             }).on('change', function () {
-                var valorSeleccionadoString = $(this).val();
-                var valorSeleccionado = JSON.parse(valorSeleccionadoString);
-                if (valorSeleccionado) {
-                    const cedulaUser = users.find(user => user.id === valorSeleccionado.user_id)?.cedula;
-                    const celularUser = users.find(user => user.id === valorSeleccionado.user_id)?.celular;
-                    const correoUser = users.find(user => user.id === valorSeleccionado.user_id)?.email;
-                    const servicio = servicios.find(servicio => servicio.id === valorSeleccionado.servicio_id)?.nombre;
-                    // const nombreAlmacen = almacenes.find(almacen => almacen.almacen_id === valorSeleccionado.almacen_id)?.nombre;
+                var selectedOption = $(this).find('option:selected');
+                var paqueteId = selectedOption.data('paquete-id');
+                var servicioId = selectedOption.data('servicio-id');
+                var precio = selectedOption.data('precio');
+                var userId = selectedOption.data('user-id');
 
+                var cedulaUser = users.find(user => user.id === userId)?.cedula;
+                var celularUser = users.find(user => user.id === userId)?.celular;
+                var correoUser = users.find(user => user.id === userId)?.email;
+                var servicio = servicios.find(servicio => servicio.id === servicioId)?.nombre;
 
-                    // Llenar los campos con los valores obtenidos
-                    $('input[name="tcGuiaId"]').val(valorSeleccionado.id);
-                    $('input[name="tcGuiaCodigo"]').val(valorSeleccionado.codigo);
-                    $('input[name="tcUserId"]').val(valorSeleccionado.user_id);
-                    $('input[name="tcCiNit"]').val(cedulaUser);
-                    $('input[name="tnTelefono"]').val(celularUser);
-                    $('input[name="tcCorreo"]').val(correoUser);
-                    $('input[name="taPedidoDetalle[0][Serial]"]').val(valorSeleccionado.paquete_id);
-                    $('input[name="taPedidoDetalle[0][Servicio]"]').val(servicio);
-                    $('input[name="taPedidoDetalle[0][Total]"]').val(valorSeleccionado.precio);
-                }
+                $('input[name="tcGuiaId"]').val(selectedOption.val());
+                $('input[name="tcGuiaCodigo"]').val(selectedOption.text());
+                $('input[name="tcUserId"]').val(userId);
+                $('input[name="tcCiNit"]').val(cedulaUser);
+                $('input[name="tnTelefono"]').val(celularUser);
+                $('input[name="tcCorreo"]').val(correoUser);
+                $('input[name="taPedidoDetalle[0][Serial]"]').val(paqueteId);
+                $('input[name="taPedidoDetalle[0][Servicio]"]').val(servicio);
+                $('input[name="taPedidoDetalle[0][Total]"]').val(precio);
+                $('input[name="tnMonto"]').val(precio);
             });
-        });
-    </script>
 
-    <script>
-        document.getElementById('mySelect').addEventListener('change', function () {
-            var selectedOption = this.options[this.selectedIndex];
-            var paqueteId = selectedOption.getAttribute('data-paquete-id');
-            var servicioId = selectedOption.getAttribute('data-servicio-id');
-            var precio = selectedOption.getAttribute('data-precio');
-            console.log(paqueteId);
-            console.log(servicioId);
-            console.log(precio);
-            document.getElementById('tcGuiaId').value = this.value;
-            document.getElementById('tcGuiaCodigo').value = selectedOption.text;
-            document.getElementById('taPedidoDetalleSerial').value = paqueteId;
-            document.getElementById('taPedidoDetalleServicio').value = servicioId;
-            document.getElementById('taPedidoDetalleTotal').value = precio;
-            document.getElementById('tnMonto').value = precio;
+            // Trigger the change event on page load to pre-fill the form if a guide is already selected
+            $('#mySelect').trigger('change');
         });
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />

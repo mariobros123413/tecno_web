@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Models\Guia;
@@ -12,48 +13,51 @@ use App\Models\User;
 use App\Models\DetalleVenta;
 use App\Models\Progreso;
 use Illuminate\Support\Facades\Redirect;
-class PagosPageController extends Controller{
 
-    public function index(){
+class PagosPageController extends Controller
+{
+
+    public function index()
+    {
         $pagos = Pago::latest('created_at')->paginate(20);
 
-        return view('GestionarVentas.pagos.admin.index',compact('pagos'));
+        return view('GestionarVentas.pagos.admin.index', compact('pagos'));
     }
 
-    public function create(){
-        $users  = User::all();
+    public function create()
+    {
+        $users = User::all();
         $paquetes = Paquete::All();
         $almacenes = Almacen::All();
         $guias = Guia::All();
         return view('GestionarVentas.pagos.index')->with("users", $users)->with("guias", $guias);
     }
 
-    public function store(Request $request) {
-       $user_id = $request->user_id_direct;
-       $user = User::find($user_id);
+    public function store(Request $request)
+    {
+        $user_id = $request->user_id_direct;
+        $user = User::find($user_id);
         $ultimaVenta = Venta::where('user_id', $user_id)
-        ->orderBy('id', 'desc')
-        ->first();
+            ->orderBy('id', 'desc')
+            ->first();
 
         $existingPago = $ultimaVenta->pago_id;
         $pago = Pago::find($existingPago);
-            $pago->fechapago = now();
-            $pago->estado = 2;
-            $pago->update();
+        $pago->fecha_pago = now();
+        $pago->estado = 2;
+        $pago->update();
 
-            $ultimaVenta->estado = 2;
-            $ultimaVenta->update();
+        $ultimaVenta->estado = 2;
+        $ultimaVenta->update();
 
-            $detalleVenta = DetalleVenta::where('venta_id', $ultimaVenta->id)->first(['curso_id']);
-
-       session()->flash('mensaje', '¡Pago realizado exitosamente!');
-       return Redirect::route('admin.ventas.create');
+        session()->flash('mensaje', '¡Pago realizado exitosamente!');
+        return Redirect::route('admin.ventas.create');
     }
 
 
     // GENERAR COBRO
-    public function generarCobro(Request $request){
-        $estudianteId = $request->tcUserId;
+    public function generarCobro(Request $request)
+    {
         $guia = Guia::find($request->tcGuiaId);
         $usuario = User::find($guia->user_id);
         do {
@@ -62,20 +66,20 @@ class PagosPageController extends Controller{
         } while ($existe);
 
         try {
-            $lcComerceID           = "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c";  // credencia dado por pagofacil
-            $lnMoneda              = 1;
-            $lnTelefono            = $usuario->celular;
-            $lcNombreUsuario       = $usuario->name;
-            $lnCiNit               = $usuario->cedula;
-            $lnGuiaId              = $request->tcGuiaId;
-            $lnGuiaCodigo          = $request->tcGuiaCodigo;
-            $lcNroPago             = $nroPago; // Genera un número aleatorio entre 100,000 y 999,999   sirve para callback , pedidoID
+            $lcComerceID = "d029fa3a95e174a19934857f535eb9427d967218a36ea014b70ad704bc6c8d1c";  // credencia dado por pagofacil
+            $lnMoneda = 1;
+            $lnTelefono = (int) $usuario->celular;
+            $lcNombreUsuario = $usuario->name;
+            $lnCiNit = (int) $usuario->cedula;
+            $lnGuiaId = $request->tcGuiaId;
+            $lnGuiaCodigo = $request->tcGuiaCodigo;
+            $lcNroPago = $nroPago; // Genera un número aleatorio entre 100,000 y 999,999   sirve para callback , pedidoID
             $lnMontoClienteEmpresa = $request->tnMonto;
-            $lcCorreo              = $usuario->email;
-            $lcUrlCallBack         = route('admin.pagos.callback'); //"https://mail.tecnoweb.org.bo/inf513/grupo03sa/ultimo/public/cursos/pagos/callback";
-            $lcUrlReturn           = "";
-            $laPedidoDetalle       =  $request->taPedidoDetalle;
-            $lcUrl                 = "";
+            $lcCorreo = $usuario->email;
+            $lcUrlCallBack = route('admin.pagos.callback'); //"https://mail.tecnoweb.org.bo/inf513/grupo03sa/ultimo/public/cursos/pagos/callback";
+            $lcUrlReturn = "";
+            $laPedidoDetalle = $request->taPedidoDetalle;
+            $lcUrl = "";
 
             $loClient = new Client();
 
@@ -89,62 +93,72 @@ class PagosPageController extends Controller{
                 'Accept' => 'application/json'
             ];
 
-            $laBody   = [
-                "tcCommerceID"          => $lcComerceID,
-                "tnMoneda"              => $lnMoneda,
-                "tnTelefono"            => $lnTelefono,
-                'tcNombreUsuario'       => $lcNombreUsuario,
-                'tnCiNit'               => $lnCiNit,
-                'tcNroPago'             => $lcNroPago,
+            $laBody = [
+                "tcCommerceID" => $lcComerceID,
+                "tnMoneda" => $lnMoneda,
+                "tnTelefono" => $lnTelefono,
+                'tcNombreUsuario' => $lcNombreUsuario,
+                'tnCiNit' => $lnCiNit,
+                'tcNroPago' => $lcNroPago,
                 "tnMontoClienteEmpresa" => $lnMontoClienteEmpresa,
-                "tcCorreo"              => $lcCorreo,
-                'tcUrlCallBack'         => $lcUrlCallBack,
-                "tcUrlReturn"           => $lcUrlReturn,
+                "tcCorreo" => $lcCorreo,
+                'tcUrlCallBack' => $lcUrlCallBack,
+                "tcUrlReturn" => $lcUrlReturn,
 
             ];
-         // dd($laBody);
+            // dd($laBody);
             $loResponse = $loClient->post($lcUrl, [
                 'headers' => $laHeader,
                 'json' => $laBody
             ]);
-
             $laResult = json_decode($loResponse->getBody()->getContents());
 
             if ($request->tnTipoServicio == 1) {
 
                 $csrfToken = csrf_token();
                 $laValues = explode(";", $laResult->values)[1];
-                $nroTransaccion= explode(";", $laResult->values)[0];
+                $nroTransaccion = explode(";", $laResult->values)[0];
+                $laQrImage = "data:image/png;base64," . json_decode($laValues)->qrImage;
 
-                $pago = Pago::create([
-                    'id' =>  $nroPago,
-                    'fechapago' => now(),
-                    'estado' => 1,
-                    'metodopago' => 4,   // 4 es Qr
-                ]);
-                $venta = Venta::create([
-                    'id' => $nroTransaccion,
-                    'user_id' =>$estudianteId,
-                    'pago_id' =>$lcNroPago,
-                    'fecha' =>now(),
-                    'metodopago' => 4,  // 4 = Qr , 2 = tigo Money
-                    'montototal' =>$request->tnMonto,
-                    'estado' =>1, // 1 = pendiente , 2 = pago exitos0 , 3 = revertido , 4 = anulado
-                ]);
+                $venta_existente = Venta::where('guia_id', $request->tcGuiaId)->first();
+                if ($venta_existente) {
+                    $id_venta_ant = $venta_existente->id;
+                    $venta_existente->id = $nroTransaccion;
+                    $venta_existente->fecha = date('Y-m-d');
+                    $venta_existente->monto_total = $request->tnMonto;
+                    $venta_existente->image_qr = $laQrImage;
+                    $venta_existente->save();
 
-
-
-
-                foreach ($laPedidoDetalle as $detalle) {
-                    $detalleVenta = DetalleVenta::create([
-                        'venta_id' => $nroTransaccion,    // Tiene el ID del pedido por tigo money
-                        'guia_id' => $lnGuiaId,   // Tiene el ID del producto, en este caso, el curso
-                        'cantidad' => 1,
-                        'total' =>  $detalle['Total'],
+                    $pago_existente = Pago::where('id_venta', $id_venta_ant)->first();
+                    $pago_existente->id = $nroPago;
+                    $pago_existente->id_venta = $nroTransaccion;
+                    $pago_existente->save();
+                } else {
+                    $pago = Pago::create([
+                        'id' => $nroPago,
+                        'fecha_pago' => date('Y-m-d'),
+                        'estado' => 0,
+                        'metodo_pago' => 1,   // 1 es Qr
+                        'id_venta' => $nroTransaccion
+                    ]);
+                    $venta = Venta::create([
+                        'id' => $nroTransaccion,
+                        'fecha' => date('Y-m-d'),
+                        'monto_total' => $request->tnMonto,
+                        'estado' => 1, // 1 = pendiente , 2 = pago exitos0 , 3 = revertido , 4 = anulado
+                        'guia_id' => $request->tcGuiaId,
+                        'image_qr' => $laQrImage
                     ]);
                 }
+                // Prepara las variables para JavaScript
+                $numeroCelular = $usuario->celular; // Asegúrate de tener este valor
+                $mensaje = 'Hola estimado/a ' . $lcNombreUsuario . ', ya está disponible el cobro con código Qr para que pueda pagar el paquete : ' . $lnGuiaCodigo;
 
-                $laQrImage = "data:image/png;base64," . json_decode($laValues)->qrImage;
+                echo '<script>
+                        var enlace = "https://wa.me/' . $numeroCelular . '?text=" + encodeURIComponent("' . $mensaje . '");
+                        window.open(enlace, "_blank");
+                      </script>';
+
                 echo '<img src="' . $laQrImage . '" alt="Imagen base64" style="display: block; margin: auto;">';
                 echo ' <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>';
                 echo '   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">';
@@ -174,8 +188,8 @@ class PagosPageController extends Controller{
                     }, 10000);
 
                     function showModal(mensaje) {
-                        const mensaje2  ="Su pedido con MMCA: *'.$lnGuiaCodigo.'* fue cancelado con éxito!, Gracias por elegir nuestro servico.";
-                                        EnviarWhatsApp('.$lnTelefono.',mensaje2);
+                        const mensaje2  ="Su pedido con MMCA: *' . $lnGuiaCodigo . '* fue cancelado con éxito!, Gracias por elegir nuestro servico.";
+                                        notificacionCliente(' . $lnTelefono . ',mensaje2);
                         const modalUserName = document.getElementById("mensaje");
                         if (modalUserName) {
                             modalUserName.textContent = mensaje;
@@ -186,6 +200,11 @@ class PagosPageController extends Controller{
                         } else {
                             console.error(\'El elemento con ID "mensaje" no fue encontrado en el DOM\');
                         }
+                    }
+
+                    function notificacionCliente(numeroCelular, mensaje) {
+                        var enlace = "https://wa.me/" + numeroCelular + "?text=" + encodeURIComponent(mensaje);
+                        window.open(enlace, \'_blank\' );
                     }
 
                     const btn = document.getElementById("closeModal");
@@ -199,6 +218,8 @@ class PagosPageController extends Controller{
                 `;
 
                 window.parent.postMessage(scriptToExecute, \'*\');
+                
+                
             </script>';
 
 
@@ -206,25 +227,25 @@ class PagosPageController extends Controller{
             } elseif ($request->tnTipoServicio == 2) {
                 $venta = Venta::create([
                     'id' => $laResult->values,
-                    'user_id' =>$estudianteId,
-                    'fecha' =>now(),
-                    'metodopago' =>2,  // 1 = Qr , 2 = tigo Money
-                    'montototal' =>$request->tnMonto,
-                    'estado' =>1, // 1 = pendiente , 2 = pago exitos0 , 3 = revertido , 4 = anulado
+                    'fecha' => date('Y-m-d'),
+                    'monto_total' => $request->tnMonto,
+                    'estado' => 1, // 1 = pendiente , 2 = pago exitos0 , 3 = revertido , 4 = anulado
+                    'guia_id' => $request->tcGuiaId
                 ]);
-                foreach ($laPedidoDetalle as $detalle) {
-                $detalleVenta = DetalleVenta::create([
-                    'venta_id' =>  $laResult->values,   // tiene el id del pedido por tigo money
-                    'curso_id' => $detalle['Serial'],   // Tiene el ID del producto, en este caso, el curso
-                    'cantidad' => $detalle['Cantidad'],
-                    'total' =>  $detalle['Total'],
-                ]);
-            }
-            $this->numeroPedido = $laResult->values;   // numero de pedido globlal
+                // foreach ($laPedidoDetalle as $detalle) {
+                //     $detalleVenta = DetalleVenta::create([
+                //         'venta_id' => $laResult->values,   // tiene el id del pedido por tigo money
+                //         'curso_id' => $detalle['Serial'],   // Tiene el ID del producto, en este caso, el curso
+                //         'cantidad' => $detalle['Cantidad'],
+                //         'total' => $detalle['Total'],
+                //     ]);
+                // }
+
+                $this->numeroPedido = $laResult->values;   // numero de pedido globlal
                 $csrfToken = csrf_token();
                 echo '<h5 class="text-center mb-4">' . $laResult->message . '</h5>';
                 echo '<p class="blue-text">Transacción Generada: </p>
-                <p id="tnTransaccion" class="blue-text">'. $laResult->values . '</p><br>';
+                <p id="tnTransaccion" class="blue-text">' . $laResult->values . '</p><br>';
                 echo '<iframe name="QrImage" style="width: 100%; height: 300px;"></iframe>';
                 echo '<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>';
 
