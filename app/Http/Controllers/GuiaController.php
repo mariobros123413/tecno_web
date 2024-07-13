@@ -16,11 +16,24 @@ use Illuminate\Support\Facades\Redirect;
 
 class GuiaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $guias = Guia::paginate(10);
+        // Obtener el parámetro 'order' de la solicitud HTTP
+        $order = $request->get('order', 'id'); // Por defecto, ordena por ID si no se proporciona otro campo
+
+        // Verificar si el campo 'order' es válido y establecer el ordenamiento correspondiente
+        $validFields = ['id', 'fecha_entrega', 'precio_total', 'estado']; // Campos válidos para ordenar
+
+        if (!in_array($order, $validFields)) {
+            $order = 'id'; // Si el campo no es válido, ordena por ID por defecto
+        }
+
+        // Obtener los registros ordenados y paginados
+        $guias = Guia::orderBy($order)->paginate(10);
+
         return view('GestionarGuias.guias.index', compact('guias'));
     }
+
 
     public function create()
     {
@@ -94,8 +107,8 @@ class GuiaController extends Controller
             $guiac = Guia::create([
                 'user_id' => $userId,
                 'paquete_id' => $paqueteId,
-                'almacen_inicio' => $almacen_id_final,
-                'almacen_final' => $almacen_id_inicio,
+                'almacen_inicio' => $almacen_id_inicio,
+                'almacen_final' => $almacen_id_final,
                 'fecha_recepcion' => $fecha_recepcion,
                 'fecha_entrega' => $fecha_entrega,
                 'estado' => false,

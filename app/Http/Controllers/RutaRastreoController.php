@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
+
 use App\Models\Guia;
 use App\Models\Almacen;
+use App\Models\Ruta_Rastreo;
 use Illuminate\Http\Request;
 
 class RutaRastreoController extends Controller
@@ -29,7 +31,18 @@ class RutaRastreoController extends Controller
         $rutaRastreo = $guia->ruta_rastreo()->where('almacen_id', $almacen_id)->first();
 
         if (!$rutaRastreo) {
-            return response()->json(['message' => 'No se encontró ninguna ruta de rastreo con ese id de almacen'], 404);
+            Ruta_Rastreo::create([
+                'guia_id' => $guia->id,
+                'almacen_id' => $almacen_id,
+                'fecha_registro' => date('Y-m-d'),
+                'estado' => true
+            ]);
+            return response()->json([
+                'numero' => $guia->user->celular,
+                'message' => "Estimad@ *" . $guia->user->name . "*. Su paquete fue registrado en *" .
+                    $almacen->nombre . "* ubicado en *" . $almacen->direccion . "*, en fecha *" . now() . "*. Puede realizar el seguimiento con el *MMCA: " .
+                    $guia->codigo . "*."
+            ], 200);
         }
         $guia->estado = true;
         $guia->save();

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->foreignIdFor(Servicio::class);
             $table->decimal('precio',8, 2);
             $table->string('codigo');
+            $table->text('image_qr');
             $table->timestamps();
         });
     }

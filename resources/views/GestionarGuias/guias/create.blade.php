@@ -99,7 +99,7 @@
                             </div>
                             <div class="mb-4">
                                 <label for="peso" class="block text-sm font-medium text-gray-700">Peso</label>
-                                <input type="text" id="peso" name="dto_peso" placeholder="Peso del Paquete"
+                                <input type="number" id="peso" name="dto_peso" placeholder="Peso del Paquete"
                                     class="mt-1 p-2 w-full border rounded-md">
                             </div>
                             <div class="mb-4">
@@ -202,7 +202,6 @@
             if (btnCapturar.length) {
                 btnCapturar.click(function () {
                     const requiredFields = [
-                        '#user_id',
                         '#dimensiones', '#peso', '#fecha_recepcion', '#fecha_entrega', '#servicio_id',
                         '#monto_total', '#almacen_id_inicio', '#almacen_id_final'
                     ];
@@ -221,6 +220,7 @@
                         alert('Por favor, complete todos los campos requeridos.');
                         return;
                     }
+
                     const user_id = $('#user_id').val();
                     const nombre = $('#dto_nombres').val();
                     const cedula = $('#dto_cedula').val();
@@ -253,31 +253,44 @@
                         _token: $('meta[name="csrf-token"]').attr('content')
                     };
                     console.log(datos);
-                    $.ajax({
-                        url: '/admin-guia/store',
-                        type: 'POST',
-                        data: datos,
+                    if (almacen_id_inicio == almacen_id_final) {
+                        alert('Por favor, el Almacen de Inicio no puede ser igual al Almacén Final.');
+                        return;
+                    }
+                    // Enviar datos al servidor utilizando fetch
+                    fetch('/admin-guia/store', {
+                        method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': datos._token
+                            'X-CSRF-TOKEN': datos._token,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
                         },
-                        success: function (response, status, xhr) {
-                            console.log(xhr.status);
-                            if (xhr.status === 200) {
-                                const mensaje = "Su pedido fue registrado exitosamente, Puede realizar el seguimiendo de su pedido en su perfil de OboLogistic.";
-                                notificacionCliente(response.celular, mensaje);
-                                $('#userModal').removeClass('hidden');
-                                $('#mensaje').text(response.message);
+                        body: JSON.stringify(datos)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error en la solicitud');
                             }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(xhr.responseText);
-                        }
-                    });
+                            return response.json(); // Devolver respuesta como JSON si es válida
+                        })
+                        .then(data => {
+                            console.log("Respuesta del servidor:", data);
+
+                            // Ejemplo de manejo de respuesta
+                            const mensaje = "Su pedido fue registrado exitosamente, Puede realizar el seguimiendo de su pedido en su perfil de OboLogistic.";
+                            notificacionCliente(data.celular, mensaje);
+                            $('#userModal').removeClass('hidden');
+                            $('#mensaje').text(data.message);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                 });
             } else {
                 console.error('No se encontró el botón btnCapturar.');
             }
         });
+
         function notificacionCliente(numeroCelular, mensaje) {
             var enlace = "https://wa.me/" + numeroCelular + "?text=" + encodeURIComponent(mensaje);
             window.open(enlace, '_blank');
@@ -305,7 +318,6 @@
             });
 
             submitButton.addEventListener('click', function () {
-                // Validar el formulario si es necesario
                 document.querySelector('form').submit();
             });
         });
@@ -367,6 +379,13 @@
             }
 
             setProgressBar(current);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fechaRecepcion = document.getElementById('fecha_recepcion');
+            const today = new Date().toISOString().split('T')[0];
+            fechaRecepcion.value = today;
         });
     </script>
 </body>

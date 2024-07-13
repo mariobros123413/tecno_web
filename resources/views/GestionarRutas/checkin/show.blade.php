@@ -42,7 +42,8 @@
                             <label for="almacen_id" class="px-3">Seleccionar Almacen</label>
                             <select id="almacen_id" name="almacen_id" class="border p-2 rounded-md">
                                 @foreach($almacenes as $almacen)
-                                    <option value="{{ $almacen->id }}">{{ $almacen->nombre }}</option>
+                                    <option value="{{ $almacen->id }}">{{ $almacen->id . ' - ' . $almacen->nombre }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -127,27 +128,43 @@
                 console.log('Almacen ID:', almacenSeleccionado.trim());
 
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                console.log('CSRF Token:', csrfToken); // Imprimir el token
 
-                axios.post('/admin-rutarastreo/checkIn', {
+                const formData = {
                     guia_id: guia_id,
-                    almacen_id: almacenSeleccionado,
-                }, {
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                })
-                    .then(response => {
-                        console.log('Datos enviados correctamente:', response.data);
-                        //EnviarWhatsApp(response.data.numero, response.data.message);
-                        notificacionCliente(response.data.numero, response.data.message);
-                        const mensaje = "Estado de la ruta actualizada! :)";
-                        $('#userModal').removeClass('hidden');
-                        $('#mensaje').text(mensaje);
+                    almacen_id: almacenSeleccionado
+                };
+                const enviarSolicitud = () => {
+                    fetch('/admin-rutarastreo/checkIn', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
                     })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert(error.response.data.message);
-                    });
+                        .then(response => {
+                            if (!response.ok) {
+                                console.log(JSON.stringify(response));
+                                throw new Error('Error en la solicitud');
+                            }
+                            return response.json(); // Devolver respuesta como JSON si es válida
+                        })
+                        .then(data => {
+                            console.log('Datos enviados correctamente:', data);
+                            notificacionCliente(data.numero, data.message);
+                            const mensaje = "Estado de la ruta actualizada! :)";
+                            $('#userModal').removeClass('hidden');
+                            $('#mensaje').text(mensaje);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error en la solicitud: ' + error.message);
+                        });
+                };
+
+                enviarSolicitud();
 
             } else {
                 console.error('Error: guia_id o almacen_id es nulo');
