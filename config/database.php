@@ -65,12 +65,12 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
+            'url' => env('jdbc:postgresql://mail.tecnoweb.org.bo'),
+            'host' => env('DB_HOST', 'jdbc:postgresql://mail.tecnoweb.org.bo'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'database' => env('DB_DATABASE', 'db_grupo04sa'),
+            'username' => env('DB_USERNAME', 'grupo04sa'),
+            'password' => env('DB_PASSWORD', 'grup004grup004'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
