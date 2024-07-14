@@ -14,6 +14,10 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('layouts.whatsapp')
+    <script>
+        // Definir la URL de la ruta en JavaScript
+        const checkInUrl = "{{ route('admin.guia.store') }}";
+    </script>
 </head>
 
 <body class="bg-gray-100">
@@ -258,7 +262,7 @@
                         return;
                     }
                     // Enviar datos al servidor utilizando fetch
-                    fetch('/admin-guia/store', {
+                    fetch(checkInUrl, {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': datos._token,

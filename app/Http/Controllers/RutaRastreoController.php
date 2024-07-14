@@ -25,7 +25,7 @@ class RutaRastreoController extends Controller
         $guia = Guia::find($guia_id);
 
         if (!$guia) {
-            return response()->json(['message' => 'La guía con el código proporcionado no fue encontrada'], 404);
+            return response()->json(['message' => 'La guía con el código proporcionado no fue encontrada'], 405);
         }
 
         $rutaRastreo = $guia->ruta_rastreo()->where('almacen_id', $almacen_id)->first();

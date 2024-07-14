@@ -13,6 +13,10 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('layouts.whatsapp')
+    <script>
+        // Definir la URL de la ruta en JavaScript
+        const checkInUrl = "{{ route('admin.rutarastreo.checkIn') }}";
+    </script>
 </head>
 
 <body class="bg-gray-100">
@@ -20,7 +24,6 @@
     <div class="w-full fixed top-0 z-50 bg-white">
         <!-- Navbar -->
         @include('layouts.navigation')
-
     </div>
 
     <div class="mt-20 mx-auto max-w-6xl px-6 lg:py-20">
@@ -28,10 +31,7 @@
             <div class="w-full lg:w-3/4 xl:w-2/3 text-center">
                 <h3 class="text-3xl font-bold">Check-In</h3>
 
-
-                <div class="bg-white shadow-md rounded-md p-6 mt-4"
-                    style="display: flex; justify-content: center; align-items: center;">
-
+                <div class="bg-white shadow-md rounded-md p-6 mt-4" style="display: flex; justify-content: center; align-items: center;">
                     <div id="camera-container" style="width: 320px; height: 240px;">
                         <video id="camera-feed" style="width: 100%; height: 100%;" autoplay></video>
                     </div>
@@ -42,8 +42,7 @@
                             <label for="almacen_id" class="px-3">Seleccionar Almacen</label>
                             <select id="almacen_id" name="almacen_id" class="border p-2 rounded-md">
                                 @foreach($almacenes as $almacen)
-                                    <option value="{{ $almacen->id }}">{{ $almacen->id . ' - ' . $almacen->nombre }}
-                                    </option>
+                                    <option value="{{ $almacen->id }}">{{ $almacen->id . ' - ' . $almacen->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -51,8 +50,7 @@
                     <div class="flex justify-center">
                         <div class="flex justify-center mt-4">
                             <div class="flex justify-center">
-                                <div id="userModal"
-                                    class="hidden fixed inset-0 bg-blue-500 bg-opacity-75 flex justify-center items-center">
+                                <div id="userModal" class="hidden fixed inset-0 bg-blue-500 bg-opacity-75 flex justify-center items-center">
                                     <div class="bg-white p-8 rounded shadow-lg  justify-center items-center">
                                         <p id="mensaje" class="text-xl font-bold mb-4"></p>
                                         <div class="flex justify-center mt-4">
@@ -118,6 +116,7 @@
         }
 
         leerCodigoQR();
+
         function enviarDatosGuia(decodedText) {
             const guia_id = decodedText;
             const selectElement = document.getElementById('almacen_id');
@@ -128,43 +127,39 @@
                 console.log('Almacen ID:', almacenSeleccionado.trim());
 
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                console.log('CSRF Token:', csrfToken); // Imprimir el token
 
                 const formData = {
                     guia_id: guia_id,
                     almacen_id: almacenSeleccionado
                 };
-                const enviarSolicitud = () => {
-                    fetch('/admin-rutarastreo/checkIn', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                console.log(JSON.stringify(response));
-                                throw new Error('Error en la solicitud');
-                            }
-                            return response.json(); // Devolver respuesta como JSON si es válida
-                        })
-                        .then(data => {
-                            console.log('Datos enviados correctamente:', data);
-                            notificacionCliente(data.numero, data.message);
-                            const mensaje = "Estado de la ruta actualizada! :)";
-                            $('#userModal').removeClass('hidden');
-                            $('#mensaje').text(mensaje);
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error en la solicitud: ' + error.message);
-                        });
-                };
 
-                enviarSolicitud();
+                fetch(checkInUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.log(JSON.stringify(response));
+                        throw new Error('Error en la solicitud');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Datos enviados correctamente:', data);
+                    notificacionCliente(data.numero, data.message);
+                    const mensaje = "¡Estado de la ruta actualizado! :)";
+                    $('#userModal').removeClass('hidden');
+                    $('#mensaje').text(mensaje);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error en la solicitud: ' + error.message);
+                });
 
             } else {
                 console.error('Error: guia_id o almacen_id es nulo');
