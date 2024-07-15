@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Providers\ContadorService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +15,18 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
+    protected $contadorService;
+    public function __construct(ContadorService $contadorService)
+    {
+        $this->contadorService = $contadorService;
+    }
     public function edit(Request $request): View
     {
+        $nombre = 'profile.edit';
+        $pagina = $this->contadorService->contador($nombre);
         return view('profile.edit', [
             'user' => $request->user(),
-        ]);
+        ])->with('visitas', $pagina);
     }
 
     /**

@@ -40,5 +40,7 @@
         </form>
 
     </x-guest-layout>
-
+    <footer class="text-center mt-4">
+        <p class="text-gray-600 dark:text-gray-300">Número de visitas: {{ $visitas }}</p>
+    </footer>
 </x-app-layout>

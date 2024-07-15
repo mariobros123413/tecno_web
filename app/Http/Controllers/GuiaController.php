@@ -8,6 +8,7 @@ use App\Models\Guia;
 use App\Models\Almacen;
 use App\Models\Servicio;
 use App\Models\Ruta_Rastreo;
+use App\Providers\ContadorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -16,33 +17,54 @@ use Illuminate\Support\Facades\Redirect;
 
 class GuiaController extends Controller
 {
-    public function index(Request $request)
+    protected $contadorService;
+    public function __construct(ContadorService $contadorService)
     {
-        // Obtener el parámetro 'order' de la solicitud HTTP
-        $order = $request->get('order', 'id'); // Por defecto, ordena por ID si no se proporciona otro campo
-
-        // Verificar si el campo 'order' es válido y establecer el ordenamiento correspondiente
-        $validFields = ['id', 'fecha_entrega', 'precio_total', 'estado']; // Campos válidos para ordenar
-
-        if (!in_array($order, $validFields)) {
-            $order = 'id'; // Si el campo no es válido, ordena por ID por defecto
-        }
-
-        // Obtener los registros ordenados y paginados
-        $guias = Guia::orderBy($order)->paginate(10);
-
-        return view('GestionarGuias.guias.index', compact('guias'));
+        $this->contadorService = $contadorService;
     }
 
+    public function index(Request $request)
+    {
+        $nombre = 'guias.index';
+        $pagina = $this->contadorService->contador($nombre);
+        $order = $request->get('order', 'id');
+        $validFields = ['id', 'fecha_entrega', 'precio_total', 'estado'];
+
+        if (!in_array($order, $validFields)) {
+            $order = 'id';
+        }
+        $guias = Guia::orderBy($order)->paginate(10);
+
+        return view('GestionarGuias.guias.index', compact('guias'))->with('visitas', $pagina);
+    }
 
     public function create()
     {
+        $nombre = 'guias.create';
+        $pagina = $this->contadorService->contador($nombre);
+
         $paquetes = Paquete::all();
         $users = User::all();
         $servicios = Servicio::all();
         $almacenes = Almacen::all();
         return view('GestionarGuias.guias.create')->with("users", $users)->with("paquetes", $paquetes)
-            ->with("servicios", $servicios)->with("almacenes", $almacenes);
+            ->with("servicios", $servicios)->with("almacenes", $almacenes)->with('visitas', $pagina);
+    }
+    public function edit($paquete_id)
+    {
+        $nombre = 'paquetes.edit';
+        $pagina = $this->contadorService->contador($nombre);
+
+        $paquete = Paquete::findOrFail($paquete_id);
+        return view('GestionarPaquetes.paquetes.edit')->with("paquete", $paquete)->with('visitas', $pagina);
+    }
+
+    public function show($guia_id)
+    {
+        $nombre = 'guias.show';
+        $pagina = $this->contadorService->contador($nombre);
+        $guia = Guia::findOrFail($guia_id);
+        return view('GestionarGuias.guias.show')->with("guia", $guia)->with('visitas', $pagina);
     }
     public function generarCodigoUnico($longitud = 10)
     {
@@ -144,17 +166,7 @@ class GuiaController extends Controller
         return Redirect::route('admin.guias');
     }
 
-    public function edit($paquete_id)
-    {
-        $paquete = Paquete::findOrFail($paquete_id);
-        return view('GestionarPaquetes.paquetes.edit')->with("paquete", $paquete);
-    }
 
-    public function show($guia_id)
-    {
-        $guia = Guia::findOrFail($guia_id);
-        return view('GestionarGuias.guias.show')->with("guia", $guia);
-    }
 
     public function destroy($guia_id)
     {

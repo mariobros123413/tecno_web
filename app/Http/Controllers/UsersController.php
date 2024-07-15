@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Providers\ContadorService;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -18,17 +19,32 @@ use App\Http\Requests\ProfileUpdateRequest;
 
 class UsersController extends Controller
 {
+    protected $contadorService;
+    public function __construct(ContadorService $contadorService)
+    {
+        $this->contadorService = $contadorService;
+    }
     public function index()
     {
+        $nombre = 'users.index';
+        $pagina = $this->contadorService->contador($nombre);
         $users = User::paginate(5);
-        return view('GestionarUsuarios.users.index', compact('users'));
-    }
-    
-    public function create()
-    {
-        return view('GestionarUsuarios.users.create');
+        return view('GestionarUsuarios.users.index', compact('users'))->with('visitas', $pagina);
     }
 
+    public function create()
+    {
+        $nombre = 'users.create';
+        $pagina = $this->contadorService->contador($nombre);
+        return view('GestionarUsuarios.users.create')->with('visitas', $pagina);
+    }
+    public function edit($user_id)
+    {
+        $nombre = 'users.edit';
+        $pagina = $this->contadorService->contador($nombre);
+        $user = User::findOrFail($user_id);
+        return view('GestionarUsuarios.users.edit', compact('user'))->with('visitas', $pagina);
+    }
     public function store(Request $request)
     {
         //dd($request->all());
@@ -41,7 +57,7 @@ class UsersController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'is_admin' => ['required', 'boolean'],
         ]);
-    
+
         // Crear el nuevo usuario
         $user = User::create([
             'name' => $request->name,
@@ -56,11 +72,7 @@ class UsersController extends Controller
         return redirect()->route('admin.users')->with('status', 'User created successfully!');
     }
 
-    public function edit($user_id)
-    {
-        $user = User::findOrFail($user_id);
-        return view('GestionarUsuarios.users.edit', compact('user'));
-    }
+
 
     public function update(Request $request, $id)
     {

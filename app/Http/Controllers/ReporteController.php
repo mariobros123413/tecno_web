@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Providers\ContadorService;
 use Illuminate\Http\Request;
 use App\Models\Ruta_rastreo;
 use App\Models\Guia;
@@ -11,8 +12,15 @@ use Carbon\Carbon;
 
 class ReporteController extends Controller
 {
+    protected $contadorService;
+    public function __construct(ContadorService $contadorService)
+    {
+        $this->contadorService = $contadorService;
+    }
     public function index()
     {
+        $nombre = 'reportes.index';
+        $pagina = $this->contadorService->contador($nombre);
         // Cantidad de paquetes recibidos por almacén
         $paquetesPorAlmacen = Ruta_rastreo::all()->groupBy('almacen_id')->map(function ($item, $key) {
             return $item->count();
@@ -55,11 +63,23 @@ class ReporteController extends Controller
         $paquetes = Paquete::all();
 
         // Retornar todos los datos a la vista
-        return view('GestionarReportes.reportes.index', compact(
-            'ruta_rastreos', 'guias', 'paquetes', 'almacenes', 'totalPaquetesEnviados',
-            'paquetesPorDia', 'paquetesPorMes', 'paquetesPorAño', 'paquetesPorAlmacen',
-            'tiempoPromedioEnvio', 'paquetesPorCliente', 'montoTotalEnviado'
-        ));
+        return view(
+            'GestionarReportes.reportes.index',
+            compact(
+                'ruta_rastreos',
+                'guias',
+                'paquetes',
+                'almacenes',
+                'totalPaquetesEnviados',
+                'paquetesPorDia',
+                'paquetesPorMes',
+                'paquetesPorAño',
+                'paquetesPorAlmacen',
+                'tiempoPromedioEnvio',
+                'paquetesPorCliente',
+                'montoTotalEnviado'
+            )
+        )->with('visitas', $pagina);
     }
 
     // Función para paquetes enviados por rango de fechas
