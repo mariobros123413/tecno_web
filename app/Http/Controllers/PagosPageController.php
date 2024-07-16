@@ -113,8 +113,10 @@ class PagosPageController extends Controller
             // dd($laBody);
             $loResponse = $loClient->post($lcUrl, [
                 'headers' => $laHeader,
-                'json' => $laBody
+                'json' => $laBody,
+                'verify' => false // Desactivar la verificación SSL
             ]);
+            
             $laResult = json_decode($loResponse->getBody()->getContents());
 
             if ($request->tnTipoServicio == 1) {

@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
             'cedula' => '123456',
             'celular' => '73371252',
             'direccion' => 'Av/ Alemana',
-            'is_admin' => 1,
+            'is_admin' => 0,
             'email' => 'cobubenjamin898@gmail.com',
             'password' => Hash::make('jose'),
             'remember_token' => Str::random(10),

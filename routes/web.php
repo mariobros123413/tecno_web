@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route ::get('/client-index',[ClientController::class,'index'])->name('client.index');
+    // Route ::get('/client-index',[ClientController::class,'index'])->name('client.index');
 
     Route::middleware('is.admin')->group(function () {
         Route::get('/dashboard', function () {
@@ -130,9 +130,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('is.client')->group(function () {
         Route ::get('/client-index',[ClientController::class,'index'])->name('client.index');
-        Route::get('/only-student', function () {
-            return 'solo el estudiante puede ver esto';
-        });
+        Route ::get('/client-paquete',[ClientController::class,'viewpaquete'])->name('client.paquete');
     });
 });
 

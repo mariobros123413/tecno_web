@@ -13,6 +13,12 @@ use Illuminate\Database\Eloquent\Builder;
 class ClientController extends Controller
 {
     public function index(){
+    
+        return view('cliente.index');
+
+    }
+
+    public function viewpaquete(){
         $userId = Auth::id();
 
         // Obtener solo los paquetes que pertenecen al usuario autenticado
@@ -21,7 +27,7 @@ class ClientController extends Controller
         $ventas = Venta::whereIn('guia_id', $guias->pluck('id'))->get();
 
         // Pasar los registros paginados y las ventas a la vista
-        return view('cliente.index', compact('guias', 'ventas'));
+        return view('cliente.paquete', compact('guias', 'ventas'));
 
     }
 
