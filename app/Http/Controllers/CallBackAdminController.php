@@ -7,7 +7,6 @@ use App\Models\Guia;
 use App\Models\Ruta_Rastreo;
 use App\Models\Venta;
 use App\Models\Pago;
-use App\Models\DetalleVenta;
 
 
 class CallBackAdminController extends Controller{

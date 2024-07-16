@@ -33,11 +33,12 @@
                                                 <th colspan="5"></th>
                                             </thead>
                                             <thead style="background-color: #dff1ff;">
-                                                <th style="text-align: center;">id</th>
-                                                <th style="text-align: center;">user_id</th>
-                                                <th style="text-align: center;">pago_id</th>
-                                                <th style="text-align: center;">fecha</th>
-                                                <th style="text-align: center;">Metodo de Pago</th>
+                                                <th style="text-align: center;">Nro Venta</th>
+                                                <th style="text-align: center;">Nombre de Usuario</th>
+                                                <th style="text-align: center;">Fecha de Venta</th>
+                                                <th style="text-align: center;">Fecha de Pago</th>
+                                                <th style="text-align: center;">Fecha de Pago</th>
+                                                <th style="text-align: center;">ID Guia</th>
                                                 <th style="text-align: center;">Monto Total</th>
                                                 <th style="text-align: center;">Estado</th>
                                                 <th style="text-align: center;">Acción</th>
@@ -46,23 +47,31 @@
 
                                                 <tr>
                                                     <td style="text-align: center;">{{$venta->id}}</td>
-                                                    <td style="text-align: center;">{{$venta->user_id}}</td>
-                                                    <td style="text-align: center;">{{$venta->pago_id}}</td>
+                                                    <td style="text-align: center;">{{$venta->guia->user->name}}</td>
                                                     <td style="text-align: center;">{{$venta->fecha}}</td>
+                                                    @if($venta->pago && $venta->pago->estado == 2)
+                                                        <td style="text-align: center;">
+                                                            {{$venta->pago ? $venta->pago->fecha_pago : 'Sin Pago'}}
+                                                        </td>
+                                                    @else
+                                                        <td style="text-align: center;">
+                                                            {{'Sin Pago'}}
+                                                        </td>
+                                                    @endif
                                                     <td style="text-align: center;">@if($venta->metodopago == 4)
                                                         Pago Qr
                                                     @else
-                                                        Pago Tigo Money
+                                                        Pago Qr
                                                     @endif
                                                     </td>
-
-                                                    <td style="text-align: center;">{{$venta->montototal}}</td>
+                                                    <td style="text-align: center;">{{$venta->guia->id}}</td>
+                                                    <td style="text-align: center;">{{$venta->monto_total}}</td>
                                                     <td style="text-align: center; color:
-                                                        @if($venta->estado == 2)
-                                                            green; /* Color verde para pagado */
-                                                        @else
-                                                            red; /* Color rojo para no cancelado */
-                                                        @endif">
+                                                                                        @if($venta->estado == 2)
+                                                                                            green; /* Color verde para pagado */
+                                                                                        @else
+                                                                                            red; /* Color rojo para no cancelado */
+                                                                                        @endif">
                                                         @if($venta->estado == 2)
                                                             Pagado
                                                         @else
@@ -71,10 +80,13 @@
                                                     </td>
 
                                                     <td style="text-align: center;">
-                                                        <x-custom-button :url="'admin-ventas/edit/'"
-                                                            :valor="$venta">{{ __('Editar') }}</x-custom-button>
-                                                        <x-danger-button x-data=""
-                                                            x-on:click.prevent="$dispatch('open-modal','{{$venta->id}}')">{{ __('Eliminar') }}</x-danger-button>
+                                                        @if($venta->estado != 2)
+                                                            <x-danger-button x-data=""
+                                                                x-on:click.prevent="$dispatch('open-modal','{{$venta->id}}')">{{ __('Eliminar') }}</x-danger-button>
+                                                        @else
+                                                            No se puede eliminar
+                                                        @endif
+
                                                         <x-modal name='{{$venta->id}}'
                                                             :show="$errors->userDeletion->isNotEmpty()" focusable>
                                                             <form method="POST"

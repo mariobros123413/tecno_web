@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pago;
 use App\Providers\ContadorService;
 use Illuminate\Http\Request;
 use App\Models\Guia;
 use App\Models\Paquete;
 use App\Models\Almacen;
-use App\Models\DetalleVenta;
 use App\Models\Venta;
 use App\Models\Servicio;
 use App\Models\User;
@@ -26,7 +26,8 @@ class VentasAdminController extends Controller
     {
         $nombre = 'ventas.admin.index';
         $pagina = $this->contadorService->contador($nombre);
-        $ventas = Venta::paginate(20);
+        $ventas = Venta::with(['guia.user', 'pago'])
+            ->paginate(20);
         return view('GestionarVentas.ventas.admin.index', compact('ventas'))->with('visitas', $pagina);
     }
     public function create()
@@ -34,12 +35,15 @@ class VentasAdminController extends Controller
         $nombre = 'ventas.admin.create';
         $pagina = $this->contadorService->contador($nombre);
         $users = User::all();
-        $paquetes = Paquete::All();
         $almacenes = Almacen::All();
         $servicios = Servicio::All();
-        $guias = Guia::All();
+        $guias = Guia::all();
+        $ventasInvalidas = Venta::where('estado', 2)->pluck('guia_id')->toArray();
+        $guiasFiltradas = $guias->reject(function ($guia) use ($ventasInvalidas) {
+            return in_array($guia->id, $ventasInvalidas);
+        });
         return view('GestionarVentas.ventas.admin.create')->with("users", $users)
-            ->with("guias", $guias)
+            ->with("guias", $guiasFiltradas)
             ->with("almacenes", $almacenes)
             ->with("servicios", $servicios)
             ->with('visitas', $pagina);
@@ -49,10 +53,28 @@ class VentasAdminController extends Controller
     {
         $nombre = 'ventas.admin.edit';
         $pagina = $this->contadorService->contador($nombre);
+
         $venta = Venta::findOrFail($venta_id);
-        $detalleventas = DetalleVenta::all();
-        $users = User::all();
-        return view('GestionarVentas.ventas.admin.edit')->with("venta", $venta)->with("detalleventas", $detalleventas)->with("users", $users)->with('visitas', $pagina);
+        return view('GestionarVentas.ventas.admin.edit')->with("venta", $venta)->with('visitas', $pagina);
+    }
+
+    public function update($venta_id)
+    {
+        $venta_existente = Venta::findOrFail($venta_id);
+        if ($venta_existente) {
+            $venta_existente->estado = 2;
+            $venta_existente->save();
+
+            $pago_existente = Pago::where('id_venta', $venta_id)->first();
+            if ($pago_existente) {
+                $pago_existente->estado = 2;
+                $pago_existente->save();
+            }
+
+            return response()->json(['message' => 'Estado actualizado', 'venta_id' => $venta_id], 200);
+        }
+
+        return response()->json(['message' => 'Error al actualizar los datos de venta/pago', 'venta_id' => $venta_id], 450);
     }
     public function store(Request $request)
     {
@@ -66,16 +88,6 @@ class VentasAdminController extends Controller
         ]);
 
         return Redirect::route('admin.ventas.create');
-    }
-
-
-
-    public function update(Request $request, $venta_id)
-    {
-        $venta = Venta::findOrFail($venta_id);
-        $venta->fill($request->all());
-        $venta->save();
-        return Redirect::route('admin.ventas');
     }
     public function destroy($venta_id)
     {

@@ -13,14 +13,10 @@ use App\Http\Controllers\RutaRastreoController;
 use App\Http\Controllers\PagosPageController;
 use App\Http\Controllers\CallBackAdminController;
 use App\Http\Controllers\ConsultarAdminController;
-use App\Http\Controllers\RutasController;
-use App\Http\Controllers\WhatsAppNotificationController;
 use App\Http\Controllers\GuiasFindController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\GuiasFindMobileController;
 use App\Http\Controllers\VentasAdminController;
-use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ReporteController;
 
 /*
@@ -35,7 +31,6 @@ use App\Http\Controllers\ReporteController;
 */
 
 Route::get('/', WelcomePageController::class)->name('/');
-Route::post('/notificaciones/whatsapp/callback', CallBackAdminController::class)->name('admin.notificaciones.callback');
 
 
 
@@ -102,80 +97,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('admin-guia/destroy/{guia_id}', [GuiaController::class, 'destroy'])->name('admin.guia.destroy');
 
         //GESTIONAR RUTA_RASTREO
-        Route::get('/admin-ruta-check-in/show',[RutaRastreoController::class, 'checkInShow'])->name('admin.ruta.checkIn.show');
+        Route::get('/admin-ruta-check-in/show', [RutaRastreoController::class, 'checkInShow'])->name('admin.ruta.checkIn.show');
         Route::post('/admin-rutarastreo/checkIn', [RutaRastreoController::class, 'checkIn'])->name('admin.rutarastreo.checkIn');
 
         //GESTIONAR VENTAS
         Route::get('/admin-ventas', [VentasAdminController::class, 'index'])->name('admin.ventas');
         Route::get('/admin-ventas/create', [VentasAdminController::class, 'create'])->name('admin.ventas.create');
         Route::post('/admin-ventas/store', [VentasAdminController::class, 'store'])->name('admin.ventas.store');
-        Route::get('/admin-ventas/edit/{venta_id}', [VentasAdminController::class, 'edit'])->name('admin.ventas.edit');
         Route::patch('/admin-ventas/update/{venta_id}', [VentasAdminController::class, 'update'])->name('admin.ventas.update');
         Route::delete('admin-ventas/destroy/{venta_id}', [VentasAdminController::class, 'destroy'])->name('admin.ventas.destroy');
-
-        //GESTIONAR NOTIFICACIONES
-        Route::get('/admin-notificaciones', [WhatsAppNotificationController::class, 'index'])->name('admin.notificaciones');
-        Route::get('/admin-notificaciones-whatsapp/show', [WhatsAppNotificationController::class, 'show'])->name('admin.notificacion.show');
-        Route::post('/admin-notificaciones-whatsapp/store', [WhatsAppNotificationController::class, 'instanciastore'])->name('admin.notificacion.store');
         //GESTIONAR REPORTES
         Route::get('/admin-reportes', [ReporteController::class, 'index'])->name('admin.reportes');
         Route::post('/reportes/paquetes-enviados-por-rango', [ReporteController::class, 'paquetesEnviadosPorRangoFechas']);
         Route::post('/reportes/monto-total-enviado-por-rango', [ReporteController::class, 'montoTotalEnviadoPorRangoFechas']);
-
-
-        //CREAR QR
-        Route::get('/proxy/get_qrcode', function () {
-            $instanceId = request('instance_id');
-            $token = request('access_token');
-            $response = Http::get("https://whatsapp.desarrollamelo.com/api/get_qrcode", [
-                'instance_id' => $instanceId,
-                'access_token' => $token,
-            ]);
-
-            return $response->body();
-        });
-        // CREAR INSTANCIA
-        Route::get('/proxy/get_instance', function () {
-            $token = request('access_token');
-            $response = Http::get("https://whatsapp.desarrollamelo.com/api/create_instance", [
-                'access_token' => $token,
-            ]);
-
-            return $response->body();
-        });
-
-        // WEBHOOK
-        Route::get('/proxy/get_webhook', function () {
-            $instanceId = request('instance_id');
-            $token = request('access_token');
-            $enable = request('enable');
-            $webhook = request('webhook_url');
-            $response = Http::get("https://whatsapp.desarrollamelo.com/api/set_webhook", [
-                'instance_id' => $instanceId,
-                'access_token' => $token,
-                'enable' => $enable,
-                'webhook_url' => $webhook,
-            ]);
-
-            return $response->body();
-        });
-
-        // SEND MESSAGE
-        Route::post('/proxy/send_message', function () {
-            $instanceId = request('instance_id');
-            $token = request('access_token');
-            $number = request('number');
-            $message = request('message');
-            $response = Http::post("https://whatsapp.desarrollamelo.com/api/send", [
-                'instance_id' => $instanceId,
-                'access_token' => $token,
-                'number' => $number,
-                'message' => $message,
-            ]);
-
-            return $response->body();
-        });
-
 
         //GESTIONAR PAGOS
         Route::get('/admin-pagos', [PagosPageController::class, 'index'])->name('admin.pagos');

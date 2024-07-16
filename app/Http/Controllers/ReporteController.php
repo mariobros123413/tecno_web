@@ -9,6 +9,7 @@ use App\Models\Guia;
 use App\Models\Almacen;
 use App\Models\Paquete;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
 {
@@ -22,22 +23,29 @@ class ReporteController extends Controller
         $nombre = 'reportes.index';
         $pagina = $this->contadorService->contador($nombre);
         // Cantidad de paquetes recibidos por almacén
-        $paquetesPorAlmacen = Ruta_rastreo::all()->groupBy('almacen_id')->map(function ($item, $key) {
-            return $item->count();
-        });
+        // $paquetesPorAlmacen = Ruta_rastreo::all()->groupBy('almacen_id')->map(function ($item, $key) {
+        //     return $item->count();
+        // });
 
-        // Tiempo promedio de envío de un paquete
-        $tiempoPromedioEnvio = Ruta_rastreo::selectRaw('AVG(TIMESTAMPDIFF(SECOND, created_at, updated_at)) as tiempo_promedio')
-            ->value('tiempo_promedio');
+        $paquetesPorAlmacen = DB::table('ruta_rastreo')
+            ->join('guia', 'ruta_rastreo.guia_id', '=', 'guia.id')
+            ->join('almacen', 'guia.almacen_inicio', '=', 'almacen.id')
+            ->select('almacen.nombre', DB::raw('COUNT(*) as cantidad'))
+            ->groupBy('almacen.nombre')
+            ->get();
 
         // Monto total de paquetes enviados
         $montoTotalEnviado = Guia::sum('precio');
 
         // Cantidad de paquetes enviados por cliente
-        $paquetesPorCliente = Guia::selectRaw('user_id, COUNT(*) as cantidad')
-            ->groupBy('user_id')
+        // $paquetesPorCliente = Guia::selectRaw('user_id, COUNT(*) as cantidad')
+        //     ->groupBy('user_id')
+        //     ->get();
+        $paquetesPorCliente = DB::table('guia')
+            ->join('users', 'guia.user_id', '=', 'users.id')
+            ->select('users.name', DB::raw('COUNT(*) as cantidad'))
+            ->groupBy('users.name')
             ->get();
-
         // Cantidad total de paquetes enviados
         $totalPaquetesEnviados = Paquete::count();
 
@@ -47,12 +55,13 @@ class ReporteController extends Controller
             ->get();
 
         // Cantidad de paquetes enviados por mes
-        $paquetesPorMes = Guia::selectRaw('YEAR(fecha_recepcion) as año, MONTH(fecha_recepcion) as mes, COUNT(*) as cantidad')
+        $paquetesPorMes = Guia::selectRaw('EXTRACT(YEAR FROM fecha_recepcion) as año, EXTRACT(MONTH FROM fecha_recepcion) as mes, COUNT(*) as cantidad')
             ->groupBy('año', 'mes')
             ->get();
 
+
         // Cantidad de paquetes enviados por año
-        $paquetesPorAño = Guia::selectRaw('YEAR(fecha_recepcion) as año, COUNT(*) as cantidad')
+        $paquetesPorAño = Guia::selectRaw('EXTRACT(YEAR FROM fecha_recepcion) as año, COUNT(*) as cantidad')
             ->groupBy('año')
             ->get();
 
@@ -75,7 +84,6 @@ class ReporteController extends Controller
                 'paquetesPorMes',
                 'paquetesPorAño',
                 'paquetesPorAlmacen',
-                'tiempoPromedioEnvio',
                 'paquetesPorCliente',
                 'montoTotalEnviado'
             )

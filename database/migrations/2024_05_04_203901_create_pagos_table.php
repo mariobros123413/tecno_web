@@ -17,7 +17,6 @@ return new class extends Migration
             $table->boolean('estado');
             $table->string('metodo_pago');
             $table->integer('id_venta');
-            $table->timestamps();
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pagos');
+        Schema::dropIfExists('pago');
     }
 };

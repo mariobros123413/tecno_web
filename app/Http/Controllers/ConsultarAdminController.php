@@ -7,7 +7,6 @@ use GuzzleHttp\Client;
 use App\Models\Guia;
 use App\Models\Pago;
 use App\Models\Venta;
-use App\Models\DetalleVenta;
 
 
 class ConsultarAdminController extends Controller

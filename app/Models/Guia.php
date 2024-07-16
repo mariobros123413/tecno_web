@@ -10,12 +10,14 @@ class Guia extends Model
     use HasFactory;
     protected $guarded = [];
     protected $table = 'guia'; // Si la tabla se llama 'guia'
-
-    public function user(){
-        return $this->belongsTo(User::class);
+    public $timestamps = false; // Desactiva las marcas de tiempo automáticas
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function paquete(){
+    public function paquete()
+    {
         return $this->belongsTo(Paquete::class);
     }
 
@@ -34,7 +36,8 @@ class Guia extends Model
         return $this->belongsTo(Servicio::class);
     }
 
-    public function ruta_rastreo(){
+    public function ruta_rastreo()
+    {
         return $this->hasMany(Ruta_Rastreo::class, 'guia_id', 'id');
     }
 }

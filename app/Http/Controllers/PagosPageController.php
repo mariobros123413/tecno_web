@@ -11,7 +11,6 @@ use App\Models\Venta;
 use App\Models\Pago;
 use App\Models\Paquete;
 use App\Models\User;
-use App\Models\DetalleVenta;
 use App\Models\Progreso;
 use Illuminate\Support\Facades\Redirect;
 
@@ -24,11 +23,9 @@ class PagosPageController extends Controller
     }
     public function index()
     {
-        $nombre = 'pagos.admin.index';
+        $nombre = 'welcome';
         $pagina = $this->contadorService->contador($nombre);
-        $pagos = Pago::latest('created_at')->paginate(20);
-
-        return view('GestionarVentas.pagos.admin.index', compact('pagos'))->with('visitas', $pagina);
+        return Redirect::route('/')->with('visitas', $pagina);
     }
 
     public function create()
@@ -63,8 +60,6 @@ class PagosPageController extends Controller
         return Redirect::route('admin.ventas.create');
     }
 
-
-    // GENERAR COBRO
     public function generarCobro(Request $request)
     {
         $guia = Guia::find($request->tcGuiaId);
@@ -159,8 +154,7 @@ class PagosPageController extends Controller
                         'image_qr' => $laQrImage
                     ]);
                 }
-                // Prepara las variables para JavaScript
-                $numeroCelular = $usuario->celular; // Asegúrate de tener este valor
+                $numeroCelular = $usuario->celular;
                 $mensaje = 'Hola estimado/a ' . $lcNombreUsuario . ', ya está disponible el cobro con código Qr para que pueda pagar el paquete : ' . $lnGuiaCodigo;
 
                 echo '<script>
@@ -184,7 +178,27 @@ class PagosPageController extends Controller
                                         clearInterval(intervalID);
 
                                         showModal("Su pedido fue pagado con éxito!!!!");
+                                        // Realiza la solicitud para actualizar el estado
+                                        const nroEstado = 2; // Reemplaza con el valor correspondiente
 
+                                        const updateRequest = new XMLHttpRequest();
+                                        const updateRoute = ' . json_encode(route('admin.ventas.update', ['venta_id' => $nroTransaccion])) . ';
+                                        const csrfToken = document.querySelector("meta[name=\'csrf-token\']").getAttribute("content");
+                                        //console.log("csrfToken : ", csrfToken);
+                                        updateRequest.open("PATCH", updateRoute, true);
+                                        updateRequest.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+                                        updateRequest.setRequestHeader("Content-Type", "application/json");
+
+                                        updateRequest.onreadystatechange = function() {
+                                            if (updateRequest.readyState === XMLHttpRequest.DONE) {
+                                                if (updateRequest.status === 200) {
+                                                    console.log("Estado actualizado:", updateRequest.responseText);
+                                                } else {
+                                                    console.error("Error al actualizar estado:", updateRequest.status, updateRequest.statusText, updateRequest.responseText);
+                                                }
+                                            }
+                                        };
+                                        updateRequest.send();
                                     }
                                 }
                             }

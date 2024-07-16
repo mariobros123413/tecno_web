@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->decimal('peso',8, 2);
             $table->string('dimensiones');
-            $table->timestamps();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('paquetes');
+        Schema::dropIfExists('paquete');
     }
 };
