@@ -4,14 +4,22 @@ namespace App\Http\Controllers;
 use App\Models\Guia;
 use App\Models\Almacen;
 use App\Models\Ruta_Rastreo;
+use App\Providers\ContadorService;
 use Illuminate\Http\Request;
 
 class RutaRastreoController extends Controller
 {
+    protected $contadorService;
+    public function __construct(ContadorService $contadorService)
+    {
+        $this->contadorService = $contadorService;
+    }
     public function checkInShow()
     {
+        $nombre = 'checkin.show';
+        $pagina = $this->contadorService->contador($nombre);
         $almacenes = Almacen::paginate(20);
-        return view('GestionarRutas.checkin.show', compact('almacenes'));
+        return view('GestionarRutas.checkin.show', compact('almacenes'))->with('visitas', $pagina);
     }
     public function checkIn(Request $request)
     {

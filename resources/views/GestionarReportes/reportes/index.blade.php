@@ -9,9 +9,11 @@
         <h1 class="text-2xl font-bold mb-4 text-center">Reportes</h1>
 
         <h2 class="text-xl font-semibold mb-2 text-center">Estadísticas Generales</h2>
-        <p class="text-center">Total de paquetes enviados: <span class="font-medium">{{ $totalPaquetesEnviados }}</span></p>
+        <p class="text-center">Total de paquetes enviados: <span class="font-medium">{{ $totalPaquetesEnviados }}</span>
+        </p>
         <p class="text-center">Monto total enviado: <span class="font-medium">{{ $montoTotalEnviado }}</span></p>
-        <p class="text-center">Tiempo promedio de envío: <span class="font-medium">{{ $tiempoPromedioEnvio }} segundos</span></p>
+        <p class="text-center">Tiempo promedio de envío: <span class="font-medium">{{ $tiempoPromedioEnvio }}
+                segundos</span></p>
 
         <div class="flex justify-center">
             <canvas id="paquetesPorDiaChart" style="width:100%; max-width:750px; height:auto;"></canvas>
@@ -33,7 +35,8 @@
             <button id="generarPdfBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Generar PDF
             </button>
-            <button onclick="printLabel()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
+            <button onclick="printLabel()"
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
                 Imprimir
             </button>
         </div>
@@ -107,7 +110,8 @@
             // Paquetes por mes
             const paquetesPorMesCtx = document.getElementById('paquetesPorMesChart').getContext('2d');
             const paquetesPorMesData = {
-                labels: {!! json_encode($paquetesPorMes->map(function($mes) { return $mes->año . '-' . $mes->mes; })) !!},
+                labels: {!! json_encode($paquetesPorMes->map(function ($mes) {
+    return $mes->año . '-' . $mes->mes; })) !!},
                 datasets: [{
                     label: 'Paquetes por Mes',
                     data: {!! json_encode($paquetesPorMes->pluck('cantidad')) !!},
@@ -269,4 +273,7 @@
             window.print();
         }
     </script>
+    <footer class="text-center mt-4">
+        <p class="text-gray-600 dark:text-gray-300">Número de visitas: {{ $visitas }}</p>
+    </footer>
 </x-app-layout>

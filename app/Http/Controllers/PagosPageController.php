@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Providers\ContadorService;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Models\Guia;
@@ -16,21 +17,29 @@ use Illuminate\Support\Facades\Redirect;
 
 class PagosPageController extends Controller
 {
-
+    protected $contadorService;
+    public function __construct(ContadorService $contadorService)
+    {
+        $this->contadorService = $contadorService;
+    }
     public function index()
     {
+        $nombre = 'pagos.admin.index';
+        $pagina = $this->contadorService->contador($nombre);
         $pagos = Pago::latest('created_at')->paginate(20);
 
-        return view('GestionarVentas.pagos.admin.index', compact('pagos'));
+        return view('GestionarVentas.pagos.admin.index', compact('pagos'))->with('visitas', $pagina);
     }
 
     public function create()
     {
+        $nombre = 'pagos.index';
+        $pagina = $this->contadorService->contador($nombre);
         $users = User::all();
         $paquetes = Paquete::All();
         $almacenes = Almacen::All();
         $guias = Guia::All();
-        return view('GestionarVentas.pagos.index')->with("users", $users)->with("guias", $guias);
+        return view('GestionarVentas.pagos.index')->with("users", $users)->with("guias", $guias)->with('visitas', $pagina);
     }
 
     public function store(Request $request)

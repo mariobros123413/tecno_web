@@ -58,11 +58,11 @@
 
                                                     <td style="text-align: center;">{{$venta->montototal}}</td>
                                                     <td style="text-align: center; color:
-                                                    @if($venta->estado == 2)
-                                                        green; /* Color verde para pagado */
-                                                    @else
-                                                        red; /* Color rojo para no cancelado */
-                                                    @endif">
+                                                        @if($venta->estado == 2)
+                                                            green; /* Color verde para pagado */
+                                                        @else
+                                                            red; /* Color rojo para no cancelado */
+                                                        @endif">
                                                         @if($venta->estado == 2)
                                                             Pagado
                                                         @else
@@ -119,6 +119,8 @@
             </div>
         </div>
     </div>
-
+    <footer class="text-center mt-4">
+        <p class="text-gray-600 dark:text-gray-300">Número de visitas: {{ $visitas }}</p>
+    </footer>
 </x-app-layout>
 <!--MODAL PARA ELIMINAR-->

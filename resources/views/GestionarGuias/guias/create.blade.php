@@ -392,6 +392,9 @@
             fechaRecepcion.value = today;
         });
     </script>
+    <footer class="text-center mt-4">
+        <p class="text-gray-600 dark:text-gray-300">Número de visitas: {{ $visitas }}</p>
+    </footer>
 </body>
 
 </html>

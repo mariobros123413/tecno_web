@@ -57,7 +57,7 @@
                                 <div class="flex flex-col">
                                     <label class="px-3">Total</label>
                                     <x-text-input type="number" id="tnMonto" name="tnMonto" :value="0.01"
-                                        class="border p-2 rounded-md" step="0.01"/>
+                                        class="border p-2 rounded-md" step="0.01" />
                                 </div>
                                 <!-- Tipo de servicio -->
                                 <div class="flex flex-col">
@@ -92,13 +92,13 @@
                                 <div class="flex flex-col">
                                     <label class="px-3">Descuento</label>
                                     <x-text-input type="number" required name="taPedidoDetalle[0][Descuento]" :value="0"
-                                        class="border p-2 rounded-md" required step="0.01"/>
+                                        class="border p-2 rounded-md" required step="0.01" />
                                 </div>
                                 <div class="flex flex-col">
                                     <label class="px-3">Total</label>
                                     <x-text-input type="text" required name="taPedidoDetalle[0][Total]"
                                         id="taPedidoDetalleTotal" :value="old('precio')" class="border p-2 rounded-md"
-                                        required step="0.01"/>
+                                        required step="0.01" />
                                 </div>
                             </div>
                             <!-- ... Otros elementos del formulario ... -->
@@ -166,6 +166,9 @@
             </div>
         </div>
     </div>
+    <footer class="text-center mt-4">
+        <p class="text-gray-600 dark:text-gray-300">Número de visitas: {{ $visitas }}</p>
+    </footer>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

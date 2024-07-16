@@ -37,48 +37,48 @@
                                             </thead>
                                             @foreach($users as $user)
 
-                                                <tr>
-                                                    <td style="text-align: center;">{{$user->id}}</td>
-                                                    <td style="text-align: center;">{{$user->name}}</td>
-                                                    <td style="text-align: center;">@if($user->is_admin == 1)
-                                                        Administrador
-                                                    @else
-                                                        Cliente
-                                                    @endif</
-                                                    td>
-                                                    <td style="text-align: center;">{{$user->email}}</td>
-                                                    <td style="text-align: center;">
-                                                        <x-custom-button :url="'admin-users/edit/'"
-                                                            :valor="$user">{{ __('Editar') }}</x-custom-button>
-                                                        <x-danger-button x-data=""
-                                                            x-on:click.prevent="$dispatch('open-modal','{{$user->id}}')">{{ __('Eliminar') }}</x-danger-button>
-                                                        <x-modal name='{{$user->id}}'
-                                                            :show="$errors->userDeletion->isNotEmpty()" focusable>
-                                                            <form method="POST"
-                                                                action="{{ route('admin.users.delete', ['user_id' => $user->id]) }}"
-                                                                class="p-6">
-                                                                @csrf
-                                                                @method('DELETE')
+                                                                                            <tr>
+                                                                                                <td style="text-align: center;">{{$user->id}}</td>
+                                                                                                <td style="text-align: center;">{{$user->name}}</td>
+                                                                                                <td style="text-align: center;">@if($user->is_admin == 1)
+                                                                                                    Administrador
+                                                                                                @else
+                                                                                                    Cliente
+                                                                                                @endif</
+                                                 td>
+                                                                                                <td style="text-align: center;">{{$user->email}}</td>
+                                                                                                <td style="text-align: center;">
+                                                                                                    <x-custom-button :url="'admin-users/edit/'"
+                                                                                                        :valor="$user">{{ __('Editar') }}</x-custom-button>
+                                                                                                    <x-danger-button x-data=""
+                                                                                                        x-on:click.prevent="$dispatch('open-modal','{{$user->id}}')">{{ __('Eliminar') }}</x-danger-button>
+                                                                                                    <x-modal name='{{$user->id}}'
+                                                                                                        :show="$errors->userDeletion->isNotEmpty()" focusable>
+                                                                                                        <form method="POST"
+                                                                                                            action="{{ route('admin.users.delete', ['user_id' => $user->id]) }}"
+                                                                                                            class="p-6">
+                                                                                                            @csrf
+                                                                                                            @method('DELETE')
 
-                                                                <h2
-                                                                    class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                                                    {{ __('¿Estás seguro que deseas eliminar al usuario ') }}{{ $user->name }}{{ __('?') }}
-                                                                </h2>
+                                                                                                            <h2
+                                                                                                                class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                                                                                                {{ __('¿Estás seguro que deseas eliminar al usuario ') }}{{ $user->name }}{{ __('?') }}
+                                                                                                            </h2>
 
 
-                                                                <div class="mt-6 flex justify-end">
-                                                                    <x-secondary-button x-on:click="$dispatch('close')">
-                                                                        {{ __('Cancel') }}
-                                                                    </x-secondary-button>
+                                                                                                            <div class="mt-6 flex justify-end">
+                                                                                                                <x-secondary-button x-on:click="$dispatch('close')">
+                                                                                                                    {{ __('Cancel') }}
+                                                                                                                </x-secondary-button>
 
-                                                                    <x-danger-button class="ms-3">
-                                                                        {{ __('Eliminar Usuario') }}
-                                                                    </x-danger-button>
-                                                                </div>
-                                                            </form>
-                                                        </x-modal>
-                                                    </td>
-                                                </tr>
+                                                                                                                <x-danger-button class="ms-3">
+                                                                                                                    {{ __('Eliminar Usuario') }}
+                                                                                                                </x-danger-button>
+                                                                                                            </div>
+                                                                                                        </form>
+                                                                                                    </x-modal>
+                                                                                                </td>
+                                                                                            </tr>
 
                                             @endforeach
                                             </tbody>
@@ -95,6 +95,8 @@
             </div>
         </div>
     </div>
-
+    <footer class="text-center mt-4">
+        <p class="text-gray-600 dark:text-gray-300">Número de visitas: {{ $visitas }}</p>
+    </footer>
 </x-app-layout>
 <!--MODAL PARA ELIMINAR-->
