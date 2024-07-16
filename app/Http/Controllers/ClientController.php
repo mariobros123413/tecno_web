@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Guia;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Area;
+use App\Models\Guia;
+use App\Models\Venta;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
+
 class ClientController extends Controller
 {
     public function index(){
@@ -16,8 +18,11 @@ class ClientController extends Controller
         // Obtener solo los paquetes que pertenecen al usuario autenticado
         $guias = Guia::where('user_id', $userId)->paginate(20);
     
-        // Pasar los registros paginados a la vista
-        return view('cliente.index', compact('guias'));
+        $ventas = Venta::whereIn('guia_id', $guias->pluck('id'))->get();
+
+        // Pasar los registros paginados y las ventas a la vista
+        return view('cliente.index', compact('guias', 'ventas'));
+
     }
 
     

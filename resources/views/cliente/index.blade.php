@@ -25,6 +25,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($guias as $guia)
+                                           @foreach($ventas as $venta)
                                             <tr class="border-b">
                                                 <td>{{ $guia->id }}</td>
                                                 <td>{{ $guia->user->name }}</td>
@@ -43,7 +44,13 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    
+                                                    @if($venta->image_qr)
+                                                      <a href="{{ asset('path/to/qr/' . $venta->image_qr) }}" 
+                                                      class="inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">Ver QR
+                                                      </a>
+                                                    @else
+                                                      Cobro no disponible, espere a que OboLogistic lo genere.
+                                                    @endif
                                                 </td>
                                                 {{-- <td>
                                                     <div class="flex space-x-2 justify-center">
@@ -80,6 +87,7 @@
                                                     </x-modal>
                                                 </td> --}}
                                             </tr>
+                                            @endforeach
                                         @endforeach
                                     </tbody>
                                 </table>
