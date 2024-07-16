@@ -16,6 +16,7 @@ use App\Http\Controllers\ConsultarAdminController;
 use App\Http\Controllers\RutasController;
 use App\Http\Controllers\WhatsAppNotificationController;
 use App\Http\Controllers\GuiasFindController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\GuiasFindMobileController;
 use App\Http\Controllers\VentasAdminController;
 use App\Http\Controllers\ProductoController;
@@ -51,6 +52,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route ::get('/client-index',[ClientController::class,'index'])->name('client.index');
 
     Route::middleware('is.admin')->group(function () {
         Route::get('/dashboard', function () {
@@ -191,7 +194,8 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::middleware('is.student')->group(function () {
+    Route::middleware('is.client')->group(function () {
+        Route ::get('/client-index',[ClientController::class,'index'])->name('client.index');
         Route::get('/only-student', function () {
             return 'solo el estudiante puede ver esto';
         });
