@@ -30,7 +30,6 @@ use App\Http\Controllers\ReporteController;
 */
 
 Route::get('/', WelcomePageController::class)->name('/');
-Route::post('/notificaciones/whatsapp/callback', CallBackAdminController::class)->name('admin.notificaciones.callback');
 
 
 
@@ -108,61 +107,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin-reportes', [ReporteController::class, 'index'])->name('admin.reportes');
         Route::post('/reportes/paquetes-enviados-por-rango', [ReporteController::class, 'paquetesEnviadosPorRangoFechas']);
         Route::post('/reportes/monto-total-enviado-por-rango', [ReporteController::class, 'montoTotalEnviadoPorRangoFechas']);
-
-
-        //CREAR QR
-        Route::get('/proxy/get_qrcode', function () {
-            $instanceId = request('instance_id');
-            $token = request('access_token');
-            $response = Http::get("https://whatsapp.desarrollamelo.com/api/get_qrcode", [
-                'instance_id' => $instanceId,
-                'access_token' => $token,
-            ]);
-
-            return $response->body();
-        });
-        // CREAR INSTANCIA
-        Route::get('/proxy/get_instance', function () {
-            $token = request('access_token');
-            $response = Http::get("https://whatsapp.desarrollamelo.com/api/create_instance", [
-                'access_token' => $token,
-            ]);
-
-            return $response->body();
-        });
-
-        // WEBHOOK
-        Route::get('/proxy/get_webhook', function () {
-            $instanceId = request('instance_id');
-            $token = request('access_token');
-            $enable = request('enable');
-            $webhook = request('webhook_url');
-            $response = Http::get("https://whatsapp.desarrollamelo.com/api/set_webhook", [
-                'instance_id' => $instanceId,
-                'access_token' => $token,
-                'enable' => $enable,
-                'webhook_url' => $webhook,
-            ]);
-
-            return $response->body();
-        });
-
-        // SEND MESSAGE
-        Route::post('/proxy/send_message', function () {
-            $instanceId = request('instance_id');
-            $token = request('access_token');
-            $number = request('number');
-            $message = request('message');
-            $response = Http::post("https://whatsapp.desarrollamelo.com/api/send", [
-                'instance_id' => $instanceId,
-                'access_token' => $token,
-                'number' => $number,
-                'message' => $message,
-            ]);
-
-            return $response->body();
-        });
-
 
         //GESTIONAR PAGOS
         Route::get('/admin-pagos', [PagosPageController::class, 'index'])->name('admin.pagos');
