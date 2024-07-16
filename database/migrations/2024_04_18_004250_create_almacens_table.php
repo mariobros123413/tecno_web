@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nombre')->unique();
             $table->string('direccion');
             $table->decimal('tax',8, 2);
-            $table->timestamps();
         });
     }
 

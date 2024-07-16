@@ -9,16 +9,18 @@ class Venta extends Model
 {
     protected $guarded=[];
     protected $table = 'venta'; // Si la tabla se llama 'guia'
+    public $timestamps = false; // Desactiva las marcas de tiempo automáticas
 
-    public function detalleventa(){
-        return $this->hasMany(DetalleVenta::class, 'venta_id', 'id');
-    }
 
     public function user(){
         return $this->belongsTo(User::class);
     }
 
+    public function guia(){
+        return $this->belongsTo(Guia::class);
+    }
+
     public function pago(){
-        return $this->belongsTo(Pago::class);
+        return $this->hasOne(Pago::class, 'id_venta');
     }
 }

@@ -10,6 +10,7 @@ class Servicio extends Model
     use HasFactory;
     protected $guarded = [];
     protected $table = 'servicio'; // Si la tabla se llama 'paquete'
+    public $timestamps = false; // Desactiva las marcas de tiempo automáticas
 
     public function guias(){
         return $this->hasMany(Guia::class);

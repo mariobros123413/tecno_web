@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nombre')->unique();
             $table->text('descripcion');
             $table->decimal('precio_kilo',8, 2);
-            $table->timestamps();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('servicios');
+        Schema::dropIfExists('servicio');
     }
 };

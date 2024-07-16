@@ -26,6 +26,7 @@ class User extends Authenticatable
         'direccion',
         'is_admin'
     ];
+    public $timestamps = false; // Desactiva las marcas de tiempo automáticas
 
     /**
      * The attributes that should be hidden for serialization.
