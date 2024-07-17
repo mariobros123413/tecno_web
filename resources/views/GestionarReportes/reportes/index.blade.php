@@ -6,27 +6,35 @@
     </x-slot>
 
     <div class="container py-4">
-        <h1 class="text-2xl font-bold mb-4 text-center">Reportes</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Reportes</h1>
 
-        <h2 class="text-xl font-semibold mb-2 text-center">Estadísticas Generales</h2>
-        <p class="text-center">Total de paquetes enviados: <span class="font-medium">{{ $totalPaquetesEnviados }}</span>
+        <h2 class="text-2xl font-semibold mb-4 text-center text-gray-600">Estadísticas Generales</h2>
+        <p class="text-center text-lg text-gray-700">
+            Total de paquetes enviados: <span class="font-medium text-gray-900">{{ $totalPaquetesEnviados }}</span>
         </p>
-        <p class="text-center">Monto total enviado: <span class="font-medium">{{ $montoTotalEnviado }}</span></p>
+        <p class="text-center text-lg text-gray-700">
+            Monto total enviado: <span class="font-medium text-gray-900">{{ $montoTotalEnviado }}</span>
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Paquetes por Mes</h3>
+                <canvas id="paquetesPorMesChart" style="width:100%; height:auto;"></canvas>
+            </div>
 
-        <div class="flex justify-center">
-            <canvas id="paquetesPorDiaChart" style="width:100%; max-width:750px; height:auto;"></canvas>
-        </div>
-        <div class="flex justify-center mt-4">
-            <canvas id="paquetesPorMesChart" style="width:100%; max-width:750px; height:auto;"></canvas>
-        </div>
-        <div class="flex justify-center mt-4">
-            <canvas id="paquetesPorAñoChart" style="width:100%; max-width:750px; height:auto;"></canvas>
-        </div>
-        <div class="flex justify-center mt-4">
-            <canvas id="paquetesPorAlmacenChart" style="width:100%; max-width:750px; height:auto;"></canvas>
-        </div>
-        <div class="flex justify-center mt-4">
-            <canvas id="paquetesPorClienteChart" style="width:100%; max-width:750px; height:auto;"></canvas>
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Paquetes por Año</h3>
+                <canvas id="paquetesPorAñoChart" style="width:100%; height:auto;"></canvas>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Paquetes por Almacén</h3>
+                <canvas id="paquetesPorAlmacenChart" style="width:100%; height:auto;"></canvas>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Paquetes por Cliente</h3>
+                <canvas id="paquetesPorClienteChart" style="width:100%; height:auto;"></canvas>
+            </div>
         </div>
         <!-- Tablas ocultas para incluir en el PDF -->
         <div id="tablasParaPdf" style="display: none;">
@@ -101,7 +109,37 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-
+            const chartOptions = {
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function (value) {
+                                if (Number.isInteger(value)) {
+                                    return value;
+                                }
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            };
             document.getElementById('generarPdfBtn').addEventListener('click', function () {
                 generarPDF();
             });
@@ -126,87 +164,6 @@
                 }, 500);
             }
 
-            // Paquetes por día
-            const paquetesPorDiaCtx = document.getElementById('paquetesPorDiaChart').getContext('2d');
-            const paquetesPorDiaData = {
-                labels: {!! json_encode($paquetesPorDia->pluck('fecha')) !!},
-                datasets: [{
-                    label: 'Paquetes por Día',
-                    data: {!! json_encode($paquetesPorDia->pluck('cantidad')) !!},
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            };
-            new Chart(paquetesPorDiaCtx, {
-                type: 'bar',
-                data: paquetesPorDiaData,
-                options: {
-                    plugins: {
-                        legend: {
-                            labels: {
-                                font: {
-                                    size: 30,
-                                    family: 'Arial',
-                                    weight: 'bold'
-                                },
-                                color: '#333'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,  // Asegura que los pasos sean en enteros
-                                callback: function (value) {
-                                    if (Number.isInteger(value)) {
-                                        return value;
-                                    }
-                                },
-                                color: '#666',
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                },
-                                color: '#666'
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeOutBounce'
-                    },
-                    layout: {
-                        padding: {
-                            left: 20,
-                            right: 20,
-                            top: 20,
-                            bottom: 20
-                        }
-                    },
-                    elements: {
-                        bar: {
-                            borderWidth: 2
-                        }
-                    }
-                }
-            });
-
             // Paquetes por mes
             const paquetesPorMesCtx = document.getElementById('paquetesPorMesChart').getContext('2d');
             const paquetesPorMesData = {
@@ -223,70 +180,7 @@
             new Chart(paquetesPorMesCtx, {
                 type: 'bar',
                 data: paquetesPorMesData,
-                options: {
-                    plugins: {
-                        legend: {
-                            labels: {
-                                font: {
-                                    size: 30,
-                                    family: 'Arial',
-                                    weight: 'bold'
-                                },
-                                color: '#333'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,  // Asegura que los pasos sean en enteros
-                                callback: function (value) {
-                                    if (Number.isInteger(value)) {
-                                        return value;
-                                    }
-                                },
-                                color: '#666',
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                },
-                                color: '#666'
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeOutBounce'
-                    },
-                    layout: {
-                        padding: {
-                            left: 20,
-                            right: 20,
-                            top: 20,
-                            bottom: 20
-                        }
-                    },
-                    elements: {
-                        bar: {
-                            borderWidth: 2
-                        }
-                    }
-                }
+                options: chartOptions
             });
 
             // Paquetes por año
@@ -304,70 +198,7 @@
             new Chart(paquetesPorAñoCtx, {
                 type: 'bar',
                 data: paquetesPorAñoData,
-                options: {
-                    plugins: {
-                        legend: {
-                            labels: {
-                                font: {
-                                    size: 30,
-                                    family: 'Arial',
-                                    weight: 'bold'
-                                },
-                                color: '#333'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,  // Asegura que los pasos sean en enteros
-                                callback: function (value) {
-                                    if (Number.isInteger(value)) {
-                                        return value;
-                                    }
-                                },
-                                color: '#666',
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                },
-                                color: '#666'
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeOutBounce'
-                    },
-                    layout: {
-                        padding: {
-                            left: 20,
-                            right: 20,
-                            top: 20,
-                            bottom: 20
-                        }
-                    },
-                    elements: {
-                        bar: {
-                            borderWidth: 2
-                        }
-                    }
-                }
+                options: chartOptions
             });
 
             // Paquetes por almacén
@@ -385,70 +216,7 @@
             new Chart(paquetesPorAlmacenCtx, {
                 type: 'bar',
                 data: paquetesPorAlmacenData,
-                options: {
-                    plugins: {
-                        legend: {
-                            labels: {
-                                font: {
-                                    size: 30,
-                                    family: 'Arial',
-                                    weight: 'bold'
-                                },
-                                color: '#333'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,  // Asegura que los pasos sean en enteros
-                                callback: function (value) {
-                                    if (Number.isInteger(value)) {
-                                        return value;
-                                    }
-                                },
-                                color: '#666',
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                },
-                                color: '#666'
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeOutBounce'
-                    },
-                    layout: {
-                        padding: {
-                            left: 20,
-                            right: 20,
-                            top: 20,
-                            bottom: 20
-                        }
-                    },
-                    elements: {
-                        bar: {
-                            borderWidth: 2
-                        }
-                    }
-                }
+                options: chartOptions
             });
 
             // Paquetes por cliente
@@ -466,70 +234,7 @@
             new Chart(paquetesPorClienteCtx, {
                 type: 'bar',
                 data: paquetesPorClienteData,
-                options: {
-                    plugins: {
-                        legend: {
-                            labels: {
-                                font: {
-                                    size: 30,
-                                    family: 'Arial',
-                                    weight: 'bold'
-                                },
-                                color: '#333'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1,  // Asegura que los pasos sean en enteros
-                                callback: function (value) {
-                                    if (Number.isInteger(value)) {
-                                        return value;
-                                    }
-                                },
-                                color: '#666',
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 25,
-                                    family: 'Arial'
-                                },
-                                color: '#666'
-                            },
-                            grid: {
-                                color: 'rgba(200, 200, 200, 0.2)'
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1000,
-                        easing: 'easeOutBounce'
-                    },
-                    layout: {
-                        padding: {
-                            left: 20,
-                            right: 20,
-                            top: 20,
-                            bottom: 20
-                        }
-                    },
-                    elements: {
-                        bar: {
-                            borderWidth: 2
-                        }
-                    }
-                }
+                options: chartOptions
             });
         });
 

@@ -37,7 +37,7 @@
                                                 <th style="text-align: center;">Nombre de Usuario</th>
                                                 <th style="text-align: center;">Fecha de Venta</th>
                                                 <th style="text-align: center;">Fecha de Pago</th>
-                                                <th style="text-align: center;">Fecha de Pago</th>
+                                                <th style="text-align: center;">Tipo de Pago</th>
                                                 <th style="text-align: center;">ID Guia</th>
                                                 <th style="text-align: center;">Monto Total</th>
                                                 <th style="text-align: center;">Estado</th>

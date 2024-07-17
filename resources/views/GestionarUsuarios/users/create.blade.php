@@ -28,7 +28,7 @@
             <!-- Cedula -->
             <div class="mt-4">
                 <x-input-label for="cedula" :value="__('Cédula')" />
-                <x-text-input id="cedula" class="block mt-1 w-full" type="text" name="cedula" :value="old('cedula')"
+                <x-text-input id="cedula" class="block mt-1 w-full" type="number" name="cedula" :value="old('cedula')"
                     required autocomplete="cedula" />
                 <x-input-error :messages="$errors->get('cedula')" class="mt-2" />
             </div>
@@ -36,7 +36,7 @@
             <!-- Celular -->
             <div class="mt-4">
                 <x-input-label for="celular" :value="__('Celular')" />
-                <x-text-input id="celular" class="block mt-1 w-full" type="text" name="celular" :value="old('celular')"
+                <x-text-input id="celular" class="block mt-1 w-full" type="number" name="celular" :value="old('celular')"
                     required autocomplete="celular" />
                 <x-input-error :messages="$errors->get('celular')" class="mt-2" />
             </div>
