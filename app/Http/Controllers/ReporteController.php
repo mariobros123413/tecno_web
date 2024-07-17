@@ -66,7 +66,6 @@ class ReporteController extends Controller
             ->get();
 
         // Obtener todos los datos adicionales que ya tenías
-        $ruta_rastreos = Ruta_rastreo::all();
         $guias = Guia::all();
         $almacenes = Almacen::all();
         $paquetes = Paquete::all();
@@ -75,7 +74,6 @@ class ReporteController extends Controller
         return view(
             'GestionarReportes.reportes.index',
             compact(
-                'ruta_rastreos',
                 'guias',
                 'paquetes',
                 'almacenes',
