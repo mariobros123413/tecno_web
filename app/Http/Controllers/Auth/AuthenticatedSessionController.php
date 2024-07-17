@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
         if (auth()->user()->isClient()) {
             return redirect()->intended(RouteServiceProvider::HOMECLIENT);
         }
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(RouteServiceProvider::HOMEDASHBOARD);
     }
 
     /**
