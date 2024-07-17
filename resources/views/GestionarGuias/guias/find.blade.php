@@ -1,27 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envío de Paquetes - Find</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-</head>
-
-<body class="bg-gray-100 dark:bg-gray-600 justify-between">
-
-
-    <!-- Navbar -->
-    @include('layouts.nav')
-    <!-- /Navbar -->
-
-
+<x-client-layout>
     <div class="max-w-md mx-auto mt-10 p-6 bg-gray-800 rounded-xl shadow-lg mb-10">
         <!-- Date Section -->
         @if ($guiaFound == true)
@@ -33,14 +10,14 @@
             $timestamp = strtotime($guia->fecha_recepcion);
             $dia = date('d', $timestamp);
             echo $dia;
-                                                        ?>
+                                                                ?>
                         </div>
                         <div class="text-xl uppercase text-white">
                             <?php
             $timestamp = strtotime($guia->fecha_recepcion);
             $nombre_dia = date('l', $timestamp);
             echo $nombre_dia;
-                                                        ?>
+                                                                ?>
                         </div>
                         <div class="uppercase tracking-wide text-white">
                             <?php
@@ -48,7 +25,7 @@
             $nombre_mes = date('F', $timestamp);
             $nombre_mes = ucfirst($nombre_mes);
             echo $nombre_mes;
-                                                        ?>
+                                                                ?>
                         </div>
                     </div>
                     @if($guia->estado == true)
@@ -93,6 +70,5 @@
     <footer class="text-center mt-4">
         <p class="text-gray-600 dark:text-gray-300">Número de visitas: {{ $visitas }}</p>
     </footer>
-</body>
 
-</html>
+</x-client-layout>
