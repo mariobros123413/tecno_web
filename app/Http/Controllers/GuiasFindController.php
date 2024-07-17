@@ -17,17 +17,15 @@ class GuiasFindController extends Controller
 
     public function __invoke()
     {
-        $nombre = 'guias.find';
+        $nombre = 'guia.find';
         $pagina = $this->contadorService->contador($nombre);
         $guia = Guia::query()
             ->withCount('ruta_rastreo')
             ->when(request('search'), function (Builder $query, $value) {
-                $query->where('guias.codigo', '=', $value);
+                $query->where('guia.codigo', '=', $value);
             })
             ->first();
-
         $guiaFound = $guia !== null;
-
         return view('GestionarGuias.guias.find', compact('guia', 'guiaFound'))->with('visitas', $pagina);
     }
 }
