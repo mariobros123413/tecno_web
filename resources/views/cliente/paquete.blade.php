@@ -51,13 +51,16 @@
                                                         <!-- Botón para ver QR -->
                                                     </td>
                                                     <td>
-                                                        @if($venta->image_qr && $venta->estado!=2)
+                                                        @if($venta->image_qr && $venta->estado != 2)
                                                             <button onclick="openModal('{{ $venta->image_qr }}')"
                                                                 class="inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">Ver
                                                                 QR
                                                             </button>
-                                                        @elseif($venta->image_qr && $venta->estado==2)
+                                                        @elseif($venta->image_qr && $venta->estado == 2)
                                                             Gracias por usar nuestro servicio!! (PAGADO).
+
+                                                        @else
+                                                            No disponible
                                                         @endif
                                                     </td>
                                                 </tr>
